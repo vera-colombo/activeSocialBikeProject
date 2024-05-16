@@ -372,6 +372,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// </summary>
     public void Update()
     {
+        Debug.LogError("current state game " + GameState.ToString());
         // Updates the timer visual
         float? stimRemainingTime = stimTimer.RemainingTime(Runner);
         if (stimRemainingTime.HasValue)
