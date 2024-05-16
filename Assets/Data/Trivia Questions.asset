@@ -1,0 +1,316 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4340417c92784114a8225f4bab72b03a, type: 3}
+  m_Name: Trivia Questions
+  m_EditorClassIdentifier: 
+  _questionCSV: {fileID: 4900000, guid: f9a9e8b2ecaeccc42ac6463c7bbb2895, type: 3}
+  _questions:
+  - question: What is the capital of France?
+    correctAnswer: Paris
+    decoyAnswers:
+    - Berlin
+    - Rome
+    - Madrid
+  - question: In which year did World War II end?
+    correctAnswer: 1945
+    decoyAnswers:
+    - 1943
+    - 1947
+    - 1950
+  - question: Who wrote the play "Romeo and Juliet"?
+    correctAnswer: William Shakespeare
+    decoyAnswers:
+    - Charles Dickens
+    - Jane Austen
+    - Mark Twain
+  - question: What is the largest planet in our solar system?
+    correctAnswer: Jupiter
+    decoyAnswers:
+    - Venus
+    - Mars
+    - Saturn
+  - question: What is the chemical symbol for gold?
+    correctAnswer: Au
+    decoyAnswers:
+    - Ag
+    - Fe
+    - Hg
+  - question: Which famous scientist developed the theory of relativity?
+    correctAnswer: Albert Einstein
+    decoyAnswers:
+    - Isaac Newton
+    - Galileo Galilei
+    - Stephen Hawking
+  - question: In what year did the Titanic sink?
+    correctAnswer: 1912
+    decoyAnswers:
+    - 1910
+    - 1915
+    - 1920
+  - question: What is the capital of Japan?
+    correctAnswer: Tokyo
+    decoyAnswers:
+    - Seoul
+    - Beijing
+    - Bangkok
+  - question: Who painted the Mona Lisa?
+    correctAnswer: Leonardo da Vinci
+    decoyAnswers:
+    - Vincent van Gogh
+    - Pablo Picasso
+    - Michelangelo
+  - question: What is the largest ocean on Earth?
+    correctAnswer: Pacific Ocean
+    decoyAnswers:
+    - Atlantic Ocean
+    - Indian Ocean
+    - Arctic Ocean
+  - question: Which planet is known as the "Red Planet"?
+    correctAnswer: Mars
+    decoyAnswers:
+    - Venus
+    - Jupiter
+    - Saturn
+  - question: Who is the author of the Harry Potter series?
+    correctAnswer: J.K. Rowling
+    decoyAnswers:
+    - J.R.R. Tolkien
+    - George R.R. Martin
+    - Suzanne Collins
+  - question: What is the capital of Australia?
+    correctAnswer: Canberra
+    decoyAnswers:
+    - Sydney
+    - Melbourne
+    - Brisbane
+  - question: Who is the current President of the United States?
+    correctAnswer: Joe Biden
+    decoyAnswers:
+    - Donald Trump
+    - Barack Obama
+    - George W. Bush
+  - question: Which element has the chemical symbol "O"?
+    correctAnswer: Oxygen
+    decoyAnswers:
+    - Gold
+    - Iron
+    - Silver
+  - question: What is the currency of China?
+    correctAnswer: Yuan
+    decoyAnswers:
+    - Yen
+    - Won
+    - Ringgit
+  - question: Who wrote the play "Hamlet"?
+    correctAnswer: William Shakespeare
+    decoyAnswers:
+    - Jane Austen
+    - Charles Dickens
+    - F. Scott Fitzgerald
+  - question: In which year did the Berlin Wall fall?
+    correctAnswer: 1989
+    decoyAnswers:
+    - 1985
+    - 1991
+    - 1995
+  - question: What is the largest mammal in the world?
+    correctAnswer: Blue whale
+    decoyAnswers:
+    - Elephant
+    - Giraffe
+    - Gorilla
+  - question: Who is known as the "Father of Computers"?
+    correctAnswer: Alan Turing
+    decoyAnswers:
+    - Bill Gates
+    - Steve Jobs
+    - Charles Babbage
+  - question: What is the official language of Brazil?
+    correctAnswer: Portuguese
+    decoyAnswers:
+    - Spanish
+    - French
+    - Italian
+  - question: Who painted the Starry Night?
+    correctAnswer: Vincent van Gogh
+    decoyAnswers:
+    - Claude Monet
+    - Pablo Picasso
+    - "Salvador Dal\xED"
+  - question: In which country is the Great Barrier Reef located?
+    correctAnswer: Australia
+    decoyAnswers:
+    - Brazil
+    - Mexico
+    - India
+  - question: What is the smallest prime number?
+    correctAnswer: 2
+    decoyAnswers:
+    - 0
+    - 1
+    - 3
+  - question: Which planet is known as the "Blue Planet"?
+    correctAnswer: Earth
+    decoyAnswers:
+    - Venus
+    - Mars
+    - Jupiter
+  - question: What is the chemical symbol for silver?
+    correctAnswer: Ag
+    decoyAnswers:
+    - Si
+    - Au
+    - Fe
+  - question: Who wrote the play "Macbeth"?
+    correctAnswer: William Shakespeare
+    decoyAnswers:
+    - Jane Austen
+    - Charles Dickens
+    - F. Scott Fitzgerald
+  - question: In which year did the United States declare its independence?
+    correctAnswer: 1776
+    decoyAnswers:
+    - 1774
+    - 1783
+    - 1800
+  - question: What is the largest desert in the world?
+    correctAnswer: Antarctica
+    decoyAnswers:
+    - Sahara Desert
+    - Arabian Desert
+    - Gobi Desert
+  - question: Who is the Greek god of the sea?
+    correctAnswer: Poseidon
+    decoyAnswers:
+    - Zeus
+    - Apollo
+    - Hermes
+  - question: What is the capital of Canada?
+    correctAnswer: Ottawa
+    decoyAnswers:
+    - Toronto
+    - Vancouver
+    - Montreal
+  - question: Who wrote the novel "To Kill a Mockingbird"?
+    correctAnswer: Harper Lee
+    decoyAnswers:
+    - J.R.R. Tolkien
+    - Jane Austen
+    - George Orwell
+  - question: What is the square root of 64?
+    correctAnswer: 8
+    decoyAnswers:
+    - 6
+    - 10
+    - 12
+  - question: Which planet is known as the "Morning Star" or "Evening Star"?
+    correctAnswer: Venus
+    decoyAnswers:
+    - Mars
+    - Jupiter
+    - Mercury
+  - question: What is the chemical symbol for water?
+    correctAnswer: H2O
+    decoyAnswers:
+    - CO2
+    - O2
+    - N2
+  - question: Who painted the Last Supper?
+    correctAnswer: Leonardo da Vinci
+    decoyAnswers:
+    - Michelangelo
+    - Vincent van Gogh
+    - Pablo Picasso
+  - question: In which year did Christopher Columbus first reach the Americas?
+    correctAnswer: 1492
+    decoyAnswers:
+    - 1500
+    - 1607
+    - 1776
+  - question: What is the largest bird in the world?
+    correctAnswer: Ostrich
+    decoyAnswers:
+    - Eagle
+    - Penguin
+    - Falcon
+  - question: Who is the author of "The Great Gatsby"?
+    correctAnswer: F. Scott Fitzgerald
+    decoyAnswers:
+    - Ernest Hemingway
+    - Jane Austen
+    - George Orwell
+  - question: What is the speed of light?
+    correctAnswer: 300,000 km/s
+    decoyAnswers:
+    - 150,000 km/s
+    - 500,000 km/s
+    - 10,000 km/s
+  - question: Which country is known as the Land of the Rising Sun?
+    correctAnswer: Japan
+    decoyAnswers:
+    - China
+    - South Korea
+    - Vietnam
+  - question: What is the currency of the United Kingdom?
+    correctAnswer: Pound Sterling
+    decoyAnswers:
+    - Euro
+    - Dollar
+    - Yen
+  - question: Who is the lead vocalist of the band Queen?
+    correctAnswer: Freddie Mercury
+    decoyAnswers:
+    - John Lennon
+    - Mick Jagger
+    - David Bowie
+  - question: In which year did the first moon landing occur?
+    correctAnswer: 1969
+    decoyAnswers:
+    - 1961
+    - 1975
+    - 1983
+  - question: What is the largest island in the world?
+    correctAnswer: Greenland
+    decoyAnswers:
+    - Australia
+    - Borneo
+    - Madagascar
+  - question: Who painted the Sistine Chapel ceiling?
+    correctAnswer: Michelangelo
+    decoyAnswers:
+    - Leonardo da Vinci
+    - Raphael
+    - Donatello
+  - question: What is the capital of South Africa?
+    correctAnswer: Pretoria
+    decoyAnswers:
+    - Nairobi
+    - Cape Town
+    - Johannesburg
+  - question: Who discovered penicillin?
+    correctAnswer: Alexander Fleming
+    decoyAnswers:
+    - Marie Curie
+    - Louis Pasteur
+    - Joseph Lister
+  - question: What is the largest moon of Jupiter?
+    correctAnswer: Ganymede
+    decoyAnswers:
+    - Io
+    - Europa
+    - Callisto
+  - question: Who wrote the novel "1984"?
+    correctAnswer: George Orwell
+    decoyAnswers:
+    - Aldous Huxley
+    - Ray Bradbury
+    - H.G. Wells
