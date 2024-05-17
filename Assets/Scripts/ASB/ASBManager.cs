@@ -22,7 +22,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, Tooltip("Timer used for the whole game.")]
     public TickTimer gameTimer { get; set; }
 
-
     [Networked, Tooltip("The length of the timer, which corresponds to the duration of the game.")]
     public float gameTimerLength { get; set; }
 
@@ -41,11 +40,19 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
 
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void DealFeedbackRPC()
+    {
+        // The code inside here will run on the client which owns this object (has state and input authority).
+        Debug.Log("Received DealFeedbackRPC on StateAuthority, modifying Networked variable Game state to feedback");
+        GameState = ASBStateGame.ShowFeedback;
+    }
+
 
     /// <summary>
     /// A randomized array of each question index.
     /// </summary>
-    [Networked, Capacity(2)]
+    [Networked, Capacity(5)]
     public NetworkArray<int> randomizedStimuliList => default;
 
     #endregion
@@ -95,7 +102,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Header("Game Rules")]
     [Tooltip("The maximum number of stimuli.")]
     [Min(1)]
-    public float maxStimuli = 2; // this could be remove in the final version because the game stops when the duration expires
+    public float maxStimuli = 5; // this could be remove in the final version because the game stops when the duration expires
 
     [Tooltip("The amount of time the stimulus will be shown.")]
     public float stimulusLength = 30;
@@ -229,26 +236,26 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     GameState = ASBStateGame.GameOver;
                 }
             }
-            else
-            {
-                if (GameState == ASBStateGame.ShowStimulus) // stimulus timer has not expired yet
-                {
-                    int totalAnswers = 0;
-                    for (int i = 0; i < ASBPlayer.ASBPlayerRefs.Count; i++)
-                    {
-                        if (ASBPlayer.ASBPlayerRefs[i].ChosenAnswer >= 0)
-                        {
-                            Debug.LogError("Checking answers: player " + ASBPlayer.ASBPlayerRefs[i].PlayerName + " has answered");
-                            totalAnswers++;
-                        }
-                    }
-                    if (totalAnswers > 0) //ACTIVE we do not care we need min 1 answer for each question
-                    {
-                        Debug.LogError("if totalanswers > 0 is true");
-                        GameState = ASBStateGame.ShowFeedback;
-                    }
-                }
-            }
+            //else
+            //{
+            //    if (GameState == ASBStateGame.ShowStimulus) // stimulus timer has not expired yet
+            //    {
+            //        int totalAnswers = 0;
+            //        for (int i = 0; i < ASBPlayer.ASBPlayerRefs.Count; i++)
+            //        {
+            //            if (ASBPlayer.ASBPlayerRefs[i].ChosenAnswer >= 0)
+            //            {
+            //                Debug.LogError("Checking answers: player " + ASBPlayer.ASBPlayerRefs[i].PlayerName + " has answered");
+            //                totalAnswers++;
+            //            }
+            //        }
+            //        if (totalAnswers > 0) //ACTIVE we do not care we need min 1 answer for each question
+            //        {
+            //            Debug.LogError("if totalanswers > 0 is true");
+            //            GameState = ASBStateGame.ShowFeedback;
+            //        }
+            //    }
+            //}
         }
         else // game over after the final duration has been reached
         {
@@ -337,6 +344,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         // If we are in the question state and the local player has not picked an answer...
         if (GameState == ASBStateGame.ShowStimulus)
         {
+            // TODO modify here by checking whether the answer is correct or not
             // For now, if Chosen Answer is less than 0, this means they haven't picked an answer.
             // We don't allow players to pick new answers at this time.
             if (ASBPlayer.LocalPlayer.ChosenAnswer < 0)
@@ -345,6 +353,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
                 ASBPlayer.LocalPlayer.ChosenAnswer = index;
                 Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and my answer is " + ASBPlayer.LocalPlayer.ChosenAnswer.ToString());
+
+                GameState = ASBStateGame.ShowFeedback;
                 // Colors the highlighted question cyan.
                 //answerHighlights[index].color = Color.cyan;
 
@@ -359,10 +369,10 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 //    TriviaPlayer.LocalPlayer.TimerBonusScore = 0;
                 //}
             }
-            else
-            {
-                _errorSFX.Play();
-            }
+            //else
+            //{
+            //    _errorSFX.Play();
+            //}
         }
 
     }
@@ -373,6 +383,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public void Update()
     {
         Debug.LogError("current state game " + GameState.ToString());
+        Debug.LogError("Update: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
         // Updates the timer visual
         float? stimRemainingTime = stimTimer.RemainingTime(Runner);
         if (stimRemainingTime.HasValue)
@@ -553,12 +564,13 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 // Deisgnate that the local player has not chosen an answer yet.
                 ASBPlayer.LocalPlayer.ChosenAnswer = -1;
 
-                // Change the game state
-                if (HasStateAuthority)
-                {
-                    GameState = ASBStateGame.ShowStimulus;
-                }
+               // GameState = ASBStateGame.ShowStimulus;
+            //Change the game state
+            if (HasStateAuthority)
+            {
+                GameState = ASBStateGame.ShowStimulus;
             }
+        }
 
             // We hide the question element in case a player late joins at the end of the game.
             if (GameState != ASBStateGame.ShowFeedback && GameState != ASBStateGame.ShowStimulus)

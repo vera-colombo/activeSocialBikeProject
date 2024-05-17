@@ -102,6 +102,8 @@ public class ASBPlayer : NetworkBehaviour
     /// </summary>
     public static ASBPlayer LocalPlayer;
 
+    protected ASBManager asbManager;
+
     [SerializeField, Tooltip("Reference to the voice network object that will show if a player is speaking or not.")]
     private VoiceNetworkObject _voiceNetworkObject;
 
@@ -165,6 +167,9 @@ public class ASBPlayer : NetworkBehaviour
         // We show the "Start Game Button" for the master client only, regardless of the number of players in the room.
         bool showGameButton = Runner.IsSharedModeMasterClient && ASBManager.ASBManagerPresent == false;
         FusionConnector.Instance.showGameButton.SetActive(showGameButton);
+
+        
+        
     }
 
     public void ShowDropdown()
@@ -286,6 +291,20 @@ public class ASBPlayer : NetworkBehaviour
 
     private void Update()
     {
+       
         speakingIcon.enabled = (_voiceNetworkObject.SpeakerInUse && _voiceNetworkObject.IsSpeaking) || (_voiceNetworkObject.RecorderInUse && _voiceNetworkObject.IsRecording);
+
+        if (HasStateAuthority == false)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            ASBPlayer.LocalPlayer.ChosenAnswer = 0;
+            Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and my answer is " + ASBPlayer.LocalPlayer.ChosenAnswer.ToString());
+            GameObject.FindGameObjectWithTag("ASBManager").GetComponent<ASBManager>().DealFeedbackRPC();
+        }
+
     }
 }

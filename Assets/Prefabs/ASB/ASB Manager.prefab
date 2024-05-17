@@ -2388,10 +2388,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a6c77d787273543a822e580ea1e9bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winnerDisplays:
-  - {fileID: 7285930173657233459}
-  - {fileID: 662275000754772447}
-  - {fileID: 3464480348071041684}
 --- !u!1 &3057784998136361914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2484,9 +2480,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f125ed05e12ac4981b979c8e58b087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: {fileID: 3045292631121414908}
-  displayScore: {fileID: 7589782447925037447}
-  avatar: {fileID: 6185544191344132441}
 --- !u!1 &3306764782403202776
 GameObject:
   m_ObjectHideFlags: 0
@@ -2713,9 +2706,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f125ed05e12ac4981b979c8e58b087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: {fileID: 6901725843142283381}
-  displayScore: {fileID: 2668237240576817825}
-  avatar: {fileID: 5479854100411060396}
 --- !u!1 &3658403295311082346
 GameObject:
   m_ObjectHideFlags: 0
@@ -2808,9 +2798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f125ed05e12ac4981b979c8e58b087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: {fileID: 8124762502615456021}
-  displayScore: {fileID: 6109991664496188828}
-  avatar: {fileID: 6185544191344132441}
 --- !u!1 &3690783705729544193
 GameObject:
   m_ObjectHideFlags: 0
@@ -3624,7 +3611,7 @@ GameObject:
   - component: {fileID: 3537564924825346036}
   m_Layer: 5
   m_Name: ASB Manager
-  m_TagString: Untagged
+  m_TagString: ASBManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3744,6 +3731,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asbStimuliList:
+  - {fileID: 7607936982600707008, guid: bf0382258b86fe14aa120beb9b7019ad, type: 3}
+  - {fileID: 3818326887979222912, guid: a61a5c8cc5488db4c8e94856cdbb5d3e, type: 3}
+  - {fileID: 3818326887979222912, guid: a61a5c8cc5488db4c8e94856cdbb5d3e, type: 3}
   - {fileID: 7607936982600707008, guid: bf0382258b86fe14aa120beb9b7019ad, type: 3}
   - {fileID: 3818326887979222912, guid: a61a5c8cc5488db4c8e94856cdbb5d3e, type: 3}
   stimulusObj: {fileID: 2163382051303340792}
