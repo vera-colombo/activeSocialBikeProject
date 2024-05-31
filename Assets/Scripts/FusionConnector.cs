@@ -35,7 +35,10 @@ public class FusionConnector : MonoBehaviour
     [Tooltip("Prefab for the ASB game itself.")]
     public NetworkObject asbGamePrefab;
 
-    public Transform playerContainer;
+    //public NetworkObject stimuliGamePrefab; 
+
+    public Transform[] playerContainer;
+    public Transform playerCanvasContainer;
 
     [Tooltip("The message shown before starting the game.")]
     public TextMeshProUGUI preGameMessage;
@@ -154,6 +157,7 @@ public class FusionConnector : MonoBehaviour
         if (runner.IsSharedModeMasterClient && !ASBManager.ASBManagerPresent)
         {
             runner.Spawn(asbGamePrefab);
+            
             showGameButton.SetActive(false);
         }
     }

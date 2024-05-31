@@ -12,8 +12,20 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("The current task stimuli.")]
     public List<GameObject> asbStimuliList;
 
+    //[Tooltip("Container for the stimulus element")]
+    //public GameObject stimulusObj = null;
+
     [Tooltip("Container for the stimulus element")]
-    public GameObject stimulusObj = null;
+    public GameObject stimuliObj = null;
+
+    //[Tooltip("Stimuli obj positions")]
+    //public Transform[] stimuliObjsTransform;
+
+    [Tooltip("Stimuli obj position right")]
+    public Transform stimuliObjRight;
+
+    [Tooltip("Stimuli obj position left")]
+    public Transform stimuliObjLeft;
 
     #region Networked Properties
     [Networked, Tooltip("Timer used for showing stimuli and transitioning between different states.")]
@@ -28,6 +40,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, Tooltip("The time between stimuli.")]
     public float stimTimerLength { get; set; }
 
+    [Networked, Tooltip("The target speed.")]
+    public float targetSpeed { get; set; }
+
     [Tooltip("The index of the current stimulus.  -1 means no stimulus is being currently shown.")]
     [Networked, OnChangedRender(nameof(UpdateCurrentStimulus))]
     public int CurrentStimulus { get; set; } = -1;
@@ -35,6 +50,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("The number of stimuli shown so far.")]
     [Networked, OnChangedRender(nameof(UpdateStimuliShownText))]
     public int StimuliShown { get; set; } = 0;
+
+    [Networked, Tooltip("The length of the timer, which corresponds to the duration of the game.")]
+    public int stimuliPos { get; set; }
 
     [Tooltip("The current state of the game.")]
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
@@ -48,11 +66,36 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         GameState = ASBStateGame.ShowFeedback;
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void ActivateStimulusRPC()
+    {
+        Debug.LogError("Received ActivateStimulusRPC on StateAuthority, spawning network object");
+
+        Transform targetParent;
+        string posString = string.Empty;
+
+        if (stimuliPos == 0)
+        {
+            targetParent = stimuliObjRight;
+            posString = "RIGHT";
+        }
+        else
+        {
+            targetParent = stimuliObjLeft;
+            posString = "LEFT";
+        }
+
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and target position is " + posString);
+
+        //targetPrefab.gameObject.SetActive(true);
+        NetworkObject currTarget = Runner.Spawn(targetPrefab, targetParent.position);
+        currTarget.gameObject.SetActive(true);
+    }
 
     /// <summary>
     /// A randomized array of each question index.
     /// </summary>
-    [Networked, Capacity(5)]
+    [Networked, Capacity(2)]
     public NetworkArray<int> randomizedStimuliList => default;
 
     #endregion
@@ -94,6 +137,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("Button displayed, only to the master client, to start a new game.")]
     public GameObject startNewGameBtn;
 
+    public NetworkObject targetPrefab;
     //[Tooltip("MonoBehaviour that displays winner at the end of a game.")]
     //public TriviaEndGame endGameObject;
 
@@ -170,6 +214,25 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
             ShuffleStimuli();
+
+            //stimuliObj = GameObject.FindGameObjectWithTag("StimuliObj");
+            //if (stimuliObj != null) 
+            //{
+
+            //    Transform[] children = GetComponentsInChildren<Transform>();
+            //    foreach (Transform c in children) 
+            //    {
+            //        if (c.gameObject.name.Equals("Right"))
+            //        {
+            //            stimuliObjRight = c;
+            //        }
+            //        else if (c.gameObject.name.Equals("Left"))
+            //        {
+            //            stimuliObjLeft = c;
+            //        }
+            //    }
+            //}
+
         }
 
         ASBManagerPresent = true;
@@ -214,13 +277,19 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public override void FixedUpdateNetwork()
     {
         // We check to see if any player has chosen answer, and if so, go to the show feedback state. // ACTIVE check if we are colliding a target
-        
+
         if (!gameTimer.Expired(Runner))
         {
             if (stimTimer.Expired(Runner)) // if when the timer expires we are in the show stimulus state, it means that no answer has been chosen
             {
+                foreach (GameObject stim in asbStimuliList)
+                {
+                    stim.SetActive(false);
+                }
                 if (StimuliShown < maxStimuli)
                 {
+                    stimuliPos = Random.Range(0, 2);
+
                     ASBPlayer.LocalPlayer.ChosenAnswer = -1;
                     CurrentStimulus++;
 
@@ -265,7 +334,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
 
 
-        
+
 
         //// When the timer expires...
         //if (stimTimer.Expired(Runner))
@@ -352,7 +421,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 _confirmSFX.Play();
 
                 ASBPlayer.LocalPlayer.ChosenAnswer = index;
-                Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and my answer is " + ASBPlayer.LocalPlayer.ChosenAnswer.ToString());
+                //Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and my answer is " + ASBPlayer.LocalPlayer.ChosenAnswer.ToString());
 
                 GameState = ASBStateGame.ShowFeedback;
                 // Colors the highlighted question cyan.
@@ -382,8 +451,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// </summary>
     public void Update()
     {
-        Debug.LogError("current state game " + GameState.ToString());
-        Debug.LogError("Update: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
+        //Debug.LogError("current state game " + GameState.ToString());
+        //Debug.LogError("Update: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
         // Updates the timer visual
         float? stimRemainingTime = stimTimer.RemainingTime(Runner);
         if (stimRemainingTime.HasValue)
@@ -407,52 +476,55 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
     }
 
-        private void OnASBGameStateChanged()
+    private void OnASBGameStateChanged()
+    {
+        // If showin an answer, we show which players got the question correct and increase their score.
+        if (GameState == ASBStateGame.Intro || GameState == ASBStateGame.NewRound)
         {
-            // If showin an answer, we show which players got the question correct and increase their score.
-            if (GameState == ASBStateGame.Intro || GameState == ASBStateGame.NewRound)
-            {
-                // Resets the score for the player
-                ASBPlayer.LocalPlayer.Score = 0;
+            // Resets the score for the player
+            ASBPlayer.LocalPlayer.Score = 0;
 
-                //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Neutral;
+            //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Neutral;
 
-                asbMessage.text = GameState == ASBStateGame.Intro ? "Select The Correct Answer\nStarting Game Soon" : "New Game Starting Soon!";
+            asbMessage.text = GameState == ASBStateGame.Intro ? "Select The Correct Answer\nStarting Game Soon" : "New Game Starting Soon!";
 
-                //endGameObject.Hide();
-            }
-            else if (GameState == ASBStateGame.ShowFeedback)
-            {
-                OnGameStateShowFeedback();
+            targetSpeed = 5;
+            stimuliObj.GetComponent<StimuliMovement>().Move(targetSpeed);
 
-                //endGameObject.Hide();
-            }
-            else if (GameState == ASBStateGame.GameOver)
-            {
-                OnGameStateGameOver();
-            }
-            else if (GameState == ASBStateGame.ShowStimulus)
-            {
-                //// Otherwise, we clear the color of the answers
-                //for (int i = 0; i < sti.Length; i++)
-                //{
-                //    answerHighlights[i].color = Color.clear;
-                //}
+            //endGameObject.Hide();
+        }
+        else if (GameState == ASBStateGame.ShowFeedback)
+        {
+            OnGameStateShowFeedback();
 
-                asbMessage.text = string.Empty;
+            //endGameObject.Hide();
+        }
+        else if (GameState == ASBStateGame.GameOver)
+        {
+            OnGameStateGameOver();
+        }
+        else if (GameState == ASBStateGame.ShowStimulus)
+        {
+            //// Otherwise, we clear the color of the answers
+            //for (int i = 0; i < sti.Length; i++)
+            //{
+            //    answerHighlights[i].color = Color.clear;
+            //}
 
-                //endGameObject.Hide();
-            }
+            asbMessage.text = string.Empty;
 
-            leaveGameBtn.SetActive(GameState == ASBStateGame.GameOver);
-            startNewGameBtn.SetActive(GameState == ASBStateGame.GameOver && Runner.IsSharedModeMasterClient == true);
+            //endGameObject.Hide();
         }
 
-        private void OnGameStateGameOver()
-        {
-            Debug.Log("Game over");
+        leaveGameBtn.SetActive(GameState == ASBStateGame.GameOver);
+        startNewGameBtn.SetActive(GameState == ASBStateGame.GameOver && Runner.IsSharedModeMasterClient == true);
+    }
+
+    private void OnGameStateGameOver()
+    {
+        Debug.Log("Game over");
         // Hides the question elements and then shows the game elements / final score / winner elements
-        stimulusObj.SetActive(false);
+        //stimulusObj.SetActive(false);
 
         //// Removes the correct answer highlight
         //for (int i = 0; i < answers.Length; i++)
@@ -489,82 +561,74 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         //}
     }
 
-        private void OnGameStateShowFeedback()
+    private void OnGameStateShowFeedback()
+    {
+        asbMessage.text = string.Empty;
+
+        // If the player picks the correct answer, their score increases
+        if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
         {
-            asbMessage.text = string.Empty;
+            //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
 
-            // If the player picks the correct answer, their score increases
-            if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
-            {
-                //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
+            int scoreValue = pointsPerStimulus;
 
-                int scoreValue = pointsPerStimulus;
+            // Gets the score pop up and toggles it.
+            var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+            scorePopUp.Score = scoreValue;
+            scorePopUp.Toggle = !scorePopUp.Toggle;
+            ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
 
-                // Gets the score pop up and toggles it.
-                var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
-                scorePopUp.Score = scoreValue;
-                scorePopUp.Toggle = !scorePopUp.Toggle;
-                ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+            ASBPlayer.LocalPlayer.Score += scoreValue;
 
-                ASBPlayer.LocalPlayer.Score += scoreValue;
+            _correctSFX.Play();
+        }
+        else
+        {
+            // Gets score value and toggles it
+            var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+            scorePopUp.Score = 0;
+            scorePopUp.Toggle = !scorePopUp.Toggle;
+            ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+            //TODO Modify here for feedback score
+            //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
 
-                _correctSFX.Play();
-            }
-            else
-            {
-                // Gets score value and toggles it
-                var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
-                scorePopUp.Score = 0;
-                scorePopUp.Toggle = !scorePopUp.Toggle;
-                ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
-                //TODO Modify here for feedback score
-                //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
-
-                _incorrectSFX.Play();
-            }
-
-            //// Turns the answer the player chose to red to show they got it incorrect.
-            //if (TriviaPlayer.LocalPlayer.ChosenAnswer > 0)
-            //{
-            //    answerHighlights[TriviaPlayer.LocalPlayer.ChosenAnswer].color = Color.red;
-            //}
-
-            //answerHighlights[0].color = Color.green;
+            _incorrectSFX.Play();
         }
 
-        private void UpdateCurrentStimulus()
+        //// Turns the answer the player chose to red to show they got it incorrect.
+        //if (TriviaPlayer.LocalPlayer.ChosenAnswer > 0)
+        //{
+        //    answerHighlights[TriviaPlayer.LocalPlayer.ChosenAnswer].color = Color.red;
+        //}
+
+        //answerHighlights[0].color = Color.green;
+    }
+
+    private void UpdateCurrentStimulus()
+    {
+        // If we are asking a question, we set the answers.
+        if (CurrentStimulus >= 0)
         {
-            // If we are asking a question, we set the answers.
-            if (CurrentStimulus >= 0)
+            //stimulusObj.SetActive(true);
+
+
+            //stimulus.text = asbStimuliList[stimulusIndex].name;
+            if (HasStateAuthority)
             {
-                stimulusObj.SetActive(true);
+                Debug.LogError("ActivateStimulus: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
+                //stimuliPos = Random.Range(0, 2);
+                ActivateStimulusRPC();
+            }
 
-                int stimulusIndex = randomizedStimuliList[CurrentStimulus];
-                stimulus.text = asbStimuliList[stimulusIndex].name;
-                //question.text = triviaQuestions.Questions[questionIndex].question;
 
-                //answers[0].text = triviaQuestions.Questions[questionIndex].correctAnswer;
 
-                //answers[1].text = triviaQuestions.Questions[questionIndex].decoyAnswers[0];
-                //answers[2].text = triviaQuestions.Questions[questionIndex].decoyAnswers[1];
-                //answers[3].text = triviaQuestions.Questions[questionIndex].decoyAnswers[2];
+            // Clears the trivia message
+            asbMessage.text = string.Empty;
 
-                // Scrambles the answers.  This can be different per player.
-                //List<int> answerIndices = new List<int>() { 0, 1, 2, 3 };
-                //while (answerIndices.Count > 0)
-                //{
-                //    int r = Random.Range(0, answerIndices.Count);
-                //    answers[answerIndices[r]].transform.parent.SetSiblingIndex(0);
-                //    answerIndices.RemoveAt(r);
-                //}
+            // Deisgnate that the local player has not chosen an answer yet.
+            ASBPlayer.LocalPlayer.ChosenAnswer = -1;
 
-                // Clears the trivia message
-                asbMessage.text = string.Empty;
-
-                // Deisgnate that the local player has not chosen an answer yet.
-                ASBPlayer.LocalPlayer.ChosenAnswer = -1;
-
-               // GameState = ASBStateGame.ShowStimulus;
+            // GameState = ASBStateGame.ShowStimulus;
             //Change the game state
             if (HasStateAuthority)
             {
@@ -572,13 +636,41 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             }
         }
 
-            // We hide the question element in case a player late joins at the end of the game.
-            if (GameState != ASBStateGame.ShowFeedback && GameState != ASBStateGame.ShowStimulus)
+        // We hide the question element in case a player late joins at the end of the game.
+        if (GameState != ASBStateGame.ShowFeedback && GameState != ASBStateGame.ShowStimulus)
+        {
+            //stimulusObj.SetActive(false);
+            foreach (GameObject stim in asbStimuliList)
             {
-                stimulusObj.SetActive(false);
+                stim.SetActive(false);
             }
         }
+    }
 
+
+    //private void ActivateStimulus(int pos)
+    //{
+    //    Transform targetParent;
+    //    string posString = string.Empty;
+
+    //    if (pos == 0)
+    //    {
+    //        targetParent = stimuliObjRight;
+    //        posString = "RIGHT";
+    //    }
+    //    else
+    //    {
+    //        targetParent = stimuliObjLeft;
+    //        posString = "LEFT";
+    //    }
+
+    //    Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and target position is " + posString);
+
+    //    targetPrefab.gameObject.SetActive(true);
+    //    Runner.Spawn(targetPrefab, targetParent.position);
+    //}
+
+   
     private void UpdateStimuliShownText()
     {
         if (StimuliShown == 0)
@@ -613,6 +705,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
 
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
+
     }
 
         public void StateAuthorityChanged()

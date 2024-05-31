@@ -110,6 +110,8 @@ public class ASBPlayer : NetworkBehaviour
     [SerializeField, Tooltip("Reference to the recorder for this player.")]
     private Recorder _recorder;
 
+    [SerializeField, Tooltip("Reference to the object containing canvas elements.")]
+    protected GameObject _canvasObjs;
     /// <summary>
     /// A list of all players currently in the game.
     /// </summary>
@@ -121,6 +123,8 @@ public class ASBPlayer : NetworkBehaviour
         Angry_WrongAnswer = 2,
         Happy_CorrectAnswer = 3,
     }
+
+    public GameObject myCameraObj;
 
     /// <summary>
     /// When a character is spawned, we have to do the checks that a user would do in case someone spawns late.
@@ -150,7 +154,17 @@ public class ASBPlayer : NetworkBehaviour
             backdrop.sprite = _mainBackdrop;
         }
 
-        transform.SetParent(FusionConnector.Instance.playerContainer, false);
+        if (ASBPlayerRefs.Count == 1) 
+        {
+            transform.SetParent(FusionConnector.Instance.playerContainer[0], false);
+        }
+        else 
+        {
+            transform.SetParent(FusionConnector.Instance.playerContainer[1], false);
+        }
+       
+
+        _canvasObjs.transform.SetParent(FusionConnector.Instance.playerCanvasContainer, false);
 
         // Sets the master client value on spawn
         if (HasStateAuthority)
@@ -168,8 +182,13 @@ public class ASBPlayer : NetworkBehaviour
         bool showGameButton = Runner.IsSharedModeMasterClient && ASBManager.ASBManagerPresent == false;
         FusionConnector.Instance.showGameButton.SetActive(showGameButton);
 
-        
-        
+        if (HasStateAuthority)
+        {
+            GameObject.Find("Main Camera").SetActive(false);
+            myCameraObj.tag = "MainCamera";
+            //Camera.GetComponent<FirstPersonCamera>().Target = transform;
+        }
+
     }
 
     public void ShowDropdown()
@@ -306,5 +325,24 @@ public class ASBPlayer : NetworkBehaviour
             GameObject.FindGameObjectWithTag("ASBManager").GetComponent<ASBManager>().DealFeedbackRPC();
         }
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = true;
+            Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = false;
+            Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
+
+        }
+
+    }
+
+    public void SendAnswer() 
+    {
+        ASBPlayer.LocalPlayer.ChosenAnswer = 0;
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and my answer is " + ASBPlayer.LocalPlayer.ChosenAnswer.ToString());
+        GameObject.FindGameObjectWithTag("ASBManager").GetComponent<ASBManager>().DealFeedbackRPC();
     }
 }

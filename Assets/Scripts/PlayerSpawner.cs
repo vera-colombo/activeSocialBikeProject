@@ -14,8 +14,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
     {
         if (player == Runner.LocalPlayer)
         {
-            var resultingPlayer = Runner.Spawn(PlayerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
-
+            var resultingPlayer = Runner.Spawn(PlayerPrefab);
+            
             FusionConnector connector = GameObject.FindObjectOfType<FusionConnector>();
             if (connector != null)
             {
@@ -31,6 +31,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 // TODO Active assign random avatar 3D model
                 // Assigns a random avatar
                 testPlayer.ChosenAvatar = Random.Range(0, testPlayer.avatarSprites.Length);
+
+              
             }
         }
 
