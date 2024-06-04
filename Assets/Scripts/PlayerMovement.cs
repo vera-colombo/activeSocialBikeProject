@@ -12,16 +12,8 @@ public class PlayerMovement : NetworkBehaviour
     [Tooltip("Which answer did the player choose.  0 is always the correct answer, but the answers are randomized locally.")]
     [Networked]
     public bool isMoving { get; set; }
-private void Awake()
-    {
-       
-    }
 
-    public void Update()
-    {
-    
 
-    }
     public override void FixedUpdateNetwork()
     {
         // Only move own player and not every other player. Each player controls its own player object.
@@ -29,12 +21,6 @@ private void Awake()
         {
             return;
         }
-
-        if (isMoving) 
-        {
-            transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
-        }
-
-
+        transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;      
     }
 }

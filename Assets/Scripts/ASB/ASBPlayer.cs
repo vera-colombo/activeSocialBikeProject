@@ -50,6 +50,12 @@ public class ASBPlayer : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnMuteChanged))]
     public NetworkBool Muted { get; set; }
 
+    public MeshRenderer playerMeshRenderer;
+
+    [Networked, OnChangedRender(nameof(ColorChanged))]
+    public Color NetworkedColor { get; set; }
+
+    
     #endregion
 
     [Tooltip("Reference to the avatars a player can use.")]
@@ -112,6 +118,10 @@ public class ASBPlayer : NetworkBehaviour
 
     [SerializeField, Tooltip("Reference to the object containing canvas elements.")]
     protected GameObject _canvasObjs;
+
+
+
+    public Camera Camera;
     /// <summary>
     /// A list of all players currently in the game.
     /// </summary>
@@ -124,7 +134,7 @@ public class ASBPlayer : NetworkBehaviour
         Happy_CorrectAnswer = 3,
     }
 
-    public GameObject myCameraObj;
+    
 
     /// <summary>
     /// When a character is spawned, we have to do the checks that a user would do in case someone spawns late.
@@ -157,10 +167,12 @@ public class ASBPlayer : NetworkBehaviour
         if (ASBPlayerRefs.Count == 1) 
         {
             transform.SetParent(FusionConnector.Instance.playerContainer[0], false);
+            NetworkedColor = Color.yellow;
         }
         else 
         {
             transform.SetParent(FusionConnector.Instance.playerContainer[1], false);
+            NetworkedColor = Color.cyan;
         }
        
 
@@ -184,11 +196,14 @@ public class ASBPlayer : NetworkBehaviour
 
         if (HasStateAuthority)
         {
-            GameObject.Find("Main Camera").SetActive(false);
-            myCameraObj.tag = "MainCamera";
-            //Camera.GetComponent<FirstPersonCamera>().Target = transform;
+            Camera = Camera.main;
+            Camera.GetComponent<FirstPersonCamera>().Target = transform;
         }
-
+    }
+    // TODO Verify if it's ok
+    void ColorChanged()
+    {
+        playerMeshRenderer.material.color = NetworkedColor;
     }
 
     public void ShowDropdown()
@@ -325,17 +340,18 @@ public class ASBPlayer : NetworkBehaviour
             GameObject.FindGameObjectWithTag("ASBManager").GetComponent<ASBManager>().DealFeedbackRPC();
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = true;
-            Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
-        }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = false;
-            Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
+        // TEST ONLY
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = true;
+        //    Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
+        //}
+        //if (Input.GetKeyDown(KeyCode.H))
+        //{
+        //    ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving = false;
+        //    Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and I am moving" + ASBPlayer.LocalPlayer.GetComponent<PlayerMovement>().isMoving.ToString());
 
-        }
+        //}
 
     }
 

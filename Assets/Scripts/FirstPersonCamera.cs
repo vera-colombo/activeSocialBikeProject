@@ -17,16 +17,17 @@ public class FirstPersonCamera : MonoBehaviour
             return;
         }
 
-        transform.position = Target.position;
 
-        //float mouseX = Input.GetAxis("Mouse X");
-        //float mouseY = Input.GetAxis("Mouse Y");
+        transform.position = Target.position + new Vector3(0f, 1f, -1);
 
-        //verticalRotation -= mouseY * MouseSensitivity;
-        //verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
+        float axesX = Input.GetAxis("Horizontal");
+        float axesY = Input.GetAxis("Vertical");
 
-        //horizontalRotation += mouseX * MouseSensitivity;
+        verticalRotation -= axesY * MouseSensitivity;
+        verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
 
-        //transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
+        horizontalRotation += axesX * MouseSensitivity;
+
+        transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
     }
 }
