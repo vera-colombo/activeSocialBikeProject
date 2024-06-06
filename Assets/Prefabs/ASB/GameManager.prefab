@@ -2834,6 +2834,7 @@ MonoBehaviour:
   _currStimuliPos: 0
   _randomIndex: 0
   _GameState: 0
+  _currTargetType: 
   _randomizedStimuliList: 
   stimulus: {fileID: 6122317417512502376}
   gameTimerText: {fileID: 3661188131938033057}
@@ -2847,8 +2848,8 @@ MonoBehaviour:
   - {fileID: 3727175143889472955, guid: 569f25a6ff6390643aac01c8f8eebe91, type: 3}
   - {fileID: 2165851154399983788, guid: 35ba4351fab014643ac98939de39fa71, type: 3}
   - {fileID: 2165851154399983788, guid: e7359216264fa5c4fbe21510c27723a9, type: 3}
-  maxStimuli: 20
-  stimulusLength: 15
+  maxStimuli: 10
+  stimulusLength: 10
   pointsPerStimulus: 1
   _correctSFX: {fileID: 3712823879457908408}
   _incorrectSFX: {fileID: 1587785957751719875}

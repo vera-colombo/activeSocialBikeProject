@@ -1,5 +1,6 @@
 using Fusion;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,6 +57,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
 
+    [Networked, Tooltip("Type of the Prefab")]
+    public string currTargetType { get; set; }
+
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void DealFeedbackRPC()
     {
@@ -84,7 +88,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
 
         Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and target position is " + posString);
-
         
         var selectedTargetPrefab = targetPrefabs[randomIndex];
 
@@ -92,7 +95,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
          {
                 NetworkObject currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
                 currTarget.gameObject.SetActive(true);
+                currTargetType = currTarget.gameObject.tag;
          }
+        Debug.LogError("Current Target: " + currTargetType);
     }
 
     /// <summary>
@@ -388,8 +393,17 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
         {
             //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
-
-            int scoreValue = pointsPerStimulus;
+            
+            // Insert an if for park or city
+            int scoreValue = 0;
+            if (currTargetType == "Park")
+            {
+                scoreValue -= 1 ;
+            }
+            else if (currTargetType == "City")
+            {
+                scoreValue += 1;
+            }
 
             // Gets the score pop up and toggles it.
             var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
