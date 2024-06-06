@@ -35,8 +35,6 @@ public class FusionConnector : MonoBehaviour
     [Tooltip("Prefab for the ASB game itself.")]
     public NetworkObject asbGamePrefab;
 
-    //public NetworkObject stimuliGamePrefab; 
-
     public Transform[] playerContainer;
     public Transform playerCanvasContainer;
 
@@ -45,9 +43,11 @@ public class FusionConnector : MonoBehaviour
 
     public static FusionConnector Instance { get; private set; }
 
+    public bool isGameStarted = false; // Dichiarazione di isGameStarted
+
     private void Awake()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 144;
 
         if (Instance != null)
         {
@@ -82,13 +82,14 @@ public class FusionConnector : MonoBehaviour
             roomName.text = "Room:  " + newRunner.SessionInfo.Name;
 
             GoToGame();
+            isGameStarted = true;
         }
         else
         {
             roomName.text = string.Empty;
 
             GoToMainMenu();
-            
+
             errorMessageObject.SetActive(true);
             TextMeshProUGUI gui = errorMessageObject.GetComponentInChildren<TextMeshProUGUI>();
             if (gui)
@@ -104,13 +105,13 @@ public class FusionConnector : MonoBehaviour
     {
         mainMenuObject.SetActive(true);
         mainGameObject.SetActive(false);
+        isGameStarted = false;
     }
 
     public void GoToGame()
     {
         mainMenuObject.SetActive(false);
         mainGameObject.SetActive(true);
-        
     }
 
     internal void OnPlayerJoin(NetworkRunner runner)
@@ -157,7 +158,7 @@ public class FusionConnector : MonoBehaviour
         if (runner.IsSharedModeMasterClient && !ASBManager.ASBManagerPresent)
         {
             runner.Spawn(asbGamePrefab);
-            
+
             showGameButton.SetActive(false);
         }
     }

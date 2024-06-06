@@ -49,6 +49,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, Tooltip("The current stimuli position.")]
     public int currStimuliPos { get; set; }
 
+    [Networked, Tooltip("Random index for Prefabs")]
+    public int randomIndex { get; set; }
+
     [Tooltip("The current state of the game.")]
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
@@ -82,9 +85,14 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
         Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and target position is " + posString);
 
-        //targetPrefab.gameObject.SetActive(true);
-        NetworkObject currTarget = Runner.Spawn(targetPrefab, targetParent.position);
-        currTarget.gameObject.SetActive(true);
+        
+        var selectedTargetPrefab = targetPrefabs[randomIndex];
+
+        if(selectedTargetPrefab != null)
+         {
+                NetworkObject currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
+                currTarget.gameObject.SetActive(true);
+         }
     }
 
     /// <summary>
@@ -119,20 +127,20 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public GameObject startNewGameBtn;
 
     // TODO modify this to have an array
-    public NetworkObject targetPrefab;
+    public NetworkObject[] targetPrefabs;
 
     #endregion
 
     [Header("Game Rules")]
     [Tooltip("The maximum number of stimuli.")]
     [Min(1)]
-    public float maxStimuli = 5; // this could be remove in the final version because the game stops when the duration expires
+    [SerializeField] public float maxStimuli = 5; // this could be remove in the final version because the game stops when the duration expires
 
     [Tooltip("The amount of time the stimulus will be shown.")]
-    public float stimulusLength = 30;
+    [SerializeField] public float stimulusLength = 15;
 
     [Tooltip("The minimum number of points earned for getting a question correct")]
-    public int pointsPerStimulus;
+    [SerializeField] public int pointsPerStimulus;
 
     #region SFX
     [Header("SFX Audio Sources")]
@@ -235,10 +243,12 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             if (stimTimer.Expired(Runner)) // if when the timer expires we are in the show stimulus state, it means that no answer has been chosen
             {
-                
+
                 if (StimuliShown < maxStimuli)
                 {
                     currStimuliPos = Random.Range(0, 2);
+                    randomIndex = Random.Range(0, targetPrefabs.Length);
+
 
                     ASBPlayer.LocalPlayer.ChosenAnswer = -1;
                     CurrentStimulus++;
@@ -255,7 +265,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     GameState = ASBStateGame.GameOver;
                 }
             }
-            
+
         }
         else // game over after the final duration has been reached
         {
@@ -443,7 +453,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             }
         }
     }
-   
+
     private void UpdateStimuliShownText()
     {
         if (StimuliShown == 0)
@@ -454,39 +464,39 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
     public async void LeaveGame()
     {
-            await Runner.Shutdown(true, ShutdownReason.Ok);
+        await Runner.Shutdown(true, ShutdownReason.Ok);
 
-            FusionConnector fc = GameObject.FindObjectOfType<FusionConnector>();
-            if (fc)
-            {
-                fc.mainMenuObject.SetActive(true);
-                fc.mainGameObject.SetActive(false);
-            }
-    }
-
-     public void StartNewGame()
-     {
-            if (HasStateAuthority == false)
-                return;
-
-            GameState = ASBStateGame.NewRound;
-
-            StimuliShown = 0;
-
-            // Sets an initial intro timer
-            stimTimerLength = 3f;
-            stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-
-            gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
-
-     }
-
-        public void StateAuthorityChanged()
+        FusionConnector fc = GameObject.FindObjectOfType<FusionConnector>();
+        if (fc)
         {
-            if (GameState == ASBStateGame.GameOver)
-            {
-                startNewGameBtn.SetActive(Runner.IsSharedModeMasterClient);
-            }
+            fc.mainMenuObject.SetActive(true);
+            fc.mainGameObject.SetActive(false);
         }
+    }
+
+    public void StartNewGame()
+    {
+        if (HasStateAuthority == false)
+            return;
+
+        GameState = ASBStateGame.NewRound;
+
+        StimuliShown = 0;
+
+        // Sets an initial intro timer
+        stimTimerLength = 3f;
+        stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
+
+        gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
     }
+
+    public void StateAuthorityChanged()
+    {
+        if (GameState == ASBStateGame.GameOver)
+        {
+            startNewGameBtn.SetActive(Runner.IsSharedModeMasterClient);
+        }
+    }
+
+}

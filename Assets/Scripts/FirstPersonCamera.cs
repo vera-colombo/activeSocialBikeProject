@@ -20,8 +20,8 @@ public class FirstPersonCamera : MonoBehaviour
 
         transform.position = Target.position + new Vector3(0f, 1f, -1);
 
-        float axesX = Input.GetAxis("Horizontal");
-        float axesY = Input.GetAxis("Vertical");
+        float axesX = Input.GetAxis("Mouse X");
+        float axesY = Input.GetAxis("Mouse Y");
 
         verticalRotation -= axesY * MouseSensitivity;
         verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
