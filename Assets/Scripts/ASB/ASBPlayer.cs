@@ -162,19 +162,7 @@ public class ASBPlayer : NetworkBehaviour
         else
         {
             backdrop.sprite = _mainBackdrop;
-        }
-
-        if (ASBPlayerRefs.Count == 1) 
-        {
-            transform.SetParent(FusionConnector.Instance.playerContainer[0], false);
-            NetworkedColor = Color.yellow;
-        }
-        else 
-        {
-            transform.SetParent(FusionConnector.Instance.playerContainer[1], false);
-            NetworkedColor = Color.cyan;
-        }
-       
+        }       
 
         _canvasObjs.transform.SetParent(FusionConnector.Instance.playerCanvasContainer, false);
 

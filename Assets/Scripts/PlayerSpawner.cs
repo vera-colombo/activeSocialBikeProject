@@ -32,6 +32,7 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 // Assigns a random avatar
                 testPlayer.ChosenAvatar = Random.Range(0, testPlayer.avatarSprites.Length);
 
+                testPlayer.transform.SetParent(FusionConnector.Instance.playerContainer[resultingPlayer.StateAuthority.PlayerId - 1], false);
               
             }
         }

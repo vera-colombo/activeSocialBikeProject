@@ -131,7 +131,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("Button displayed, only to the master client, to start a new game.")]
     public GameObject startNewGameBtn;
 
-    // TODO modify this to have an array
+
     public NetworkObject[] targetPrefabs;
 
     #endregion
@@ -353,7 +353,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
             asbMessage.text = GameState == ASBStateGame.Intro ? "Select The Correct Answer\nStarting Game Soon" : "New Game Starting Soon!";
 
-            targetSpeed = 5;
+            targetSpeed = 20;
             stimuliContainerObj.GetComponent<StimuliMovement>().Move(targetSpeed);
 
             //endGameObject.Hide();
@@ -503,6 +503,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
         gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
+        // Player movement isMoving true or false
     }
 
     public void StateAuthorityChanged()

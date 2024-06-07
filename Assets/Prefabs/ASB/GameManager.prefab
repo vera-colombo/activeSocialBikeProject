@@ -2849,7 +2849,7 @@ MonoBehaviour:
   - {fileID: 2165851154399983788, guid: 35ba4351fab014643ac98939de39fa71, type: 3}
   - {fileID: 2165851154399983788, guid: e7359216264fa5c4fbe21510c27723a9, type: 3}
   maxStimuli: 10
-  stimulusLength: 10
+  stimulusLength: 15
   pointsPerStimulus: 1
   _correctSFX: {fileID: 3712823879457908408}
   _incorrectSFX: {fileID: 1587785957751719875}
