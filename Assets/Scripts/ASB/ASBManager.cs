@@ -1,6 +1,5 @@
 using Fusion;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +10,29 @@ using UnityEngine.UI;
 public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 {
     [Tooltip("The current task stimuli.")]
-    public List<GameObject> asbStimuliList;
-
+    public List<NetworkObject> asbStimuliList1p;
+    [Tooltip("The current task stimuli.")]
+    public List<NetworkObject> asbStimuliList2p;
+    [Tooltip("The current task stimuli.")]
+    public List<NetworkObject> asbStimuliList3p;
+    [Tooltip("The current task stimuli.")]
+    public List<NetworkObject> asbStimuliList1c;
+    [Tooltip("The current task stimuli.")]
+    public List<NetworkObject> asbStimuliList2c;
+    [Tooltip("The current task stimuli.")]
+    public List<NetworkObject> asbStimuliList3c;
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList1pIds; // Equals to 0
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList2pIds; // Equals to 1
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList3pIds; // Equals to 2
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList1cIds; // Equals to 3
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList2cIds; // Equals to 4
+    [Tooltip("The current task stimuli.")]
+    public List<int> asbStimuliList3cIds; // Equals to 5
     [Tooltip("Container for the stimulus element")]
     public GameObject stimuliContainerObj = null;
 
@@ -25,6 +45,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     #region Networked Properties
     [Networked, Tooltip("Timer used for showing stimuli and transitioning between different states.")]
     public TickTimer stimTimer { get; set; }
+    [Networked, Tooltip("Level.")]
+    public int level { get; set; }//numero tra 1 e 3 (compresi)
 
     [Networked, Tooltip("Timer used for the whole game.")]
     public TickTimer gameTimer { get; set; }
@@ -33,7 +55,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public float gameTimerLength { get; set; }
 
     [Networked, Tooltip("The time between stimuli.")]
-    public float stimTimerLength { get; set; }
+    private float stimTimerLength { get; set; }
 
     // TODO modify this with the cycling speed
     [Networked, Tooltip("The target speed.")]
@@ -49,16 +71,13 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
     [Networked, Tooltip("The current stimuli position.")]
     public int currStimuliPos { get; set; }
-
     [Networked, Tooltip("Random index for Prefabs")]
     public int randomIndex { get; set; }
-
+    [Networked, Tooltip("Current target")]
+    public string currentTargetType { get; set; }
     [Tooltip("The current state of the game.")]
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
-
-    [Networked, Tooltip("Type of the Prefab")]
-    public string currTargetType { get; set; }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void DealFeedbackRPC()
@@ -71,41 +90,72 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void ActivateStimulusRPC()
     {
-        Debug.LogError("Received ActivateStimulusRPC on StateAuthority, spawning network object");
-
+        //Debug.LogError("Received ActivateStimulusRPC on StateAuthority, spawning network object");
+        NetworkObject currTarget;
         Transform targetParent;
-        string posString;
 
         if (currStimuliPos == 0)
         {
             targetParent = stimuliObjRight;
-            posString = "RIGHT";
         }
         else
         {
             targetParent = stimuliObjLeft;
-            posString = "LEFT";
         }
 
-        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and target position is " + posString);
-        
-        var selectedTargetPrefab = targetPrefabs[randomIndex];
+        //targetPrefab.gameObject.SetActive(true);
+        int selectedTargetPrefabIndex;
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and randomIndex is " + randomIndex.ToString());
+        if (randomIndex != -1)
+        {
+            selectedTargetPrefabIndex = TargetPrefabIdxList[randomIndex];
+        }
+        else
+        {
+            selectedTargetPrefabIndex = -1;
+        }
 
-        if(selectedTargetPrefab != null)
-         {
-                NetworkObject currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
-                currTarget.gameObject.SetActive(true);
-                currTargetType = currTarget.gameObject.tag;
-         }
-        Debug.LogError("Current Target: " + currTargetType);
+        string outputString = "";
+
+        // Loop to spawn all prefabs into the scene
+        for (int i = 0; i < TargetPrefabIdxList.Count; i++)
+        {
+            outputString = outputString + TargetPrefabIdxList[i].ToString() + ", ";
+        }
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and target prefab index is " + selectedTargetPrefabIndex + " target list " + outputString);
+        NetworkObject selectedTargetPrefab = null;
+        //for (int i = 0; i < TargetPrefabIdxList.Count; i++)
+        //{
+        if (selectedTargetPrefabIndex == 0)
+        {
+            selectedTargetPrefab = asbStimuliList1p[0];
+        }
+        else if (selectedTargetPrefabIndex == 1)
+        {
+            selectedTargetPrefab = asbStimuliList2p[0];
+        }
+        else if (selectedTargetPrefabIndex == 2)
+        {
+            selectedTargetPrefab = asbStimuliList3p[0];
+        }
+        else if (selectedTargetPrefabIndex == 3)
+        {
+            selectedTargetPrefab = asbStimuliList1c[0];
+        }
+        else if (selectedTargetPrefabIndex == 4)
+        {
+            selectedTargetPrefab = asbStimuliList2c[0];
+        }
+        else if (selectedTargetPrefabIndex == 5)
+        {
+            selectedTargetPrefab = asbStimuliList3c[0];
+        }
+        currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
+        currTarget.gameObject.SetActive(true);
+        currentTargetType = currTarget.gameObject.tag;
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and target prefab is " + currentTargetType + " " + currTarget.gameObject.name);
+        //}
     }
-
-    /// <summary>
-    /// A randomized array of each question index.
-    /// </summary>
-    /// TODO use this to randomize the current stimuli
-    [Networked, Capacity(2)]
-    public NetworkArray<int> randomizedStimuliList => default;
 
     #endregion
 
@@ -131,21 +181,22 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("Button displayed, only to the master client, to start a new game.")]
     public GameObject startNewGameBtn;
 
-
-    public NetworkObject[] targetPrefabs;
+    // TODO modify this to have an array
+    [Networked, Capacity(6)]
+    public NetworkLinkedList<int> TargetPrefabIdxList => default;
 
     #endregion
 
     [Header("Game Rules")]
     [Tooltip("The maximum number of stimuli.")]
     [Min(1)]
-    [SerializeField] public float maxStimuli = 5; // this could be remove in the final version because the game stops when the duration expires
+    public float maxStimuli; // this could be remove in the final version because the game stops when the duration expires
 
     [Tooltip("The amount of time the stimulus will be shown.")]
-    [SerializeField] public float stimulusLength = 15;
+    public float stimulusLength = 30;
 
     [Tooltip("The minimum number of points earned for getting a question correct")]
-    [SerializeField] public int pointsPerStimulus;
+    private int pointsClicked = 0;
 
     #region SFX
     [Header("SFX Audio Sources")]
@@ -166,7 +217,11 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// Has a asb manager been made; set to true on spawn and false on despawn
     /// </summary>
     public static bool ASBManagerPresent { get; private set; } = false;
-
+    /*void Start()
+    {
+        asbStimuliList.Add(new GameObject());
+    }
+    */
     /// <summary>
     /// The different states of the ABS game.  Made as a byte since there are not that many.
     /// </summary>
@@ -216,19 +271,145 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     private void ShuffleStimuli()
     {
         Debug.Log("SHUFFLING STIMULI!");
-
         // Creates a temp list, adding every index avaiable
-        List<int> stimuliAvailable = new List<int>();
-        for (int i = 0; i < asbStimuliList.Count; i++)
-            stimuliAvailable.Add(i);
-
-        // Sets the fifty questions
-        for (int i = 0; i < randomizedStimuliList.Length; i++)
+        if (level == 1)
         {
-            int c = stimuliAvailable[Random.Range(0, stimuliAvailable.Count)];
-            stimuliAvailable.Remove(c);
-            randomizedStimuliList.Set(i, c);
+            int index = Random.Range(0, 3);
+            if (index == 0)
+            {
+                For(asbStimuliList1pIds);
+            }
+            else if (index == 1)
+            {
+                For(asbStimuliList2pIds);
+            }
+            else
+            {
+                For(asbStimuliList3pIds);
+            }
         }
+        else if (level == 2)
+        {
+            int index = Random.Range(0, 3);
+            if (index == 0)
+            {
+                For(asbStimuliList1pIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList3pIds);
+                }
+                else
+                {
+                    For(asbStimuliList2pIds);
+                }
+            }
+            else if (index == 1)
+            {
+                For(asbStimuliList2pIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList1pIds);
+                }
+                else
+                {
+                    For(asbStimuliList3pIds);
+                }
+            }
+            else
+            {
+                For(asbStimuliList3pIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList2pIds);
+                }
+                else
+                {
+                    For(asbStimuliList3pIds);
+                }
+            }
+        }
+        else if (level == 3)
+        {
+            For(asbStimuliList1pIds);
+            For(asbStimuliList2pIds);
+            For(asbStimuliList3pIds);
+        }//Prima parco, adesso città
+        if (level == 1)
+        {
+            int index = Random.Range(3, 6);
+            if (index == 3)
+            {
+                For(asbStimuliList1cIds);
+            }
+            else if (index == 4)
+            {
+                For(asbStimuliList2cIds);
+            }
+            else
+            {
+                For(asbStimuliList3cIds);
+            }
+        }
+        else if (level == 2)
+        {
+            int index = Random.Range(3, 6);
+            if (index == 3)
+            {
+                For(asbStimuliList1cIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList2cIds);
+                }
+                else
+                {
+                    For(asbStimuliList3cIds);
+                }
+            }
+            else if (index == 4)
+            {
+                For(asbStimuliList2cIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList3cIds);
+                }
+                else
+                {
+                    For(asbStimuliList1cIds);
+                }
+            }
+            else
+            {
+                For(asbStimuliList3cIds);
+                index = Random.Range(0, 2);
+                if (index == 0)
+                {
+                    For(asbStimuliList1cIds);
+                }
+                else
+                {
+                    For(asbStimuliList2cIds);
+                }
+            }
+        }
+        else if (level == 3)
+        {
+            For(asbStimuliList1cIds);
+            For(asbStimuliList2cIds);
+            For(asbStimuliList3cIds);
+        }
+        // Sets the fifty questions
+        /*for (int i = 0; i < targetPrefab.Count; i++)
+        {
+            N c = randomizedStimuliList[Random.Range(0, randomizedStimuliList.Count)];
+            randomizedStimuliList.Remove(c);
+            randomizedStimuliList.Insert(i,c);
+        }
+        */
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
@@ -252,9 +433,14 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 if (StimuliShown < maxStimuli)
                 {
                     currStimuliPos = Random.Range(0, 2);
-                    randomIndex = Random.Range(0, targetPrefabs.Length);
-
-
+                    if (TargetPrefabIdxList.Count > 0)
+                    {
+                        randomIndex = Random.Range(0, TargetPrefabIdxList.Count);
+                    }
+                    else
+                    {
+                        randomIndex = -1;
+                    }
                     ASBPlayer.LocalPlayer.ChosenAnswer = -1;
                     CurrentStimulus++;
 
@@ -328,7 +514,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             stimTimerText.text = "0";
         }
-
         float? gameRemainingTime = gameTimer.RemainingTime(Runner);
 
         if (gameRemainingTime.HasValue)
@@ -340,7 +525,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             gameTimerText.text = "0";
         }
     }
-
     private void OnASBGameStateChanged()
     {
         // If showin an answer, we show which players got the question correct and increase their score.
@@ -370,49 +554,41 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
         else if (GameState == ASBStateGame.ShowStimulus)
         {
-
             asbMessage.text = string.Empty;
             // TODO delete this if not appropriate
             //endGameObject.Hide();
         }
-
         leaveGameBtn.SetActive(GameState == ASBStateGame.GameOver);
         startNewGameBtn.SetActive(GameState == ASBStateGame.GameOver && Runner.IsSharedModeMasterClient == true);
     }
-
     private void OnGameStateGameOver()
     {
         Debug.Log("Game over");
     }
-
     private void OnGameStateShowFeedback()
     {
         asbMessage.text = string.Empty;
-
         // If the player picks the correct answer, their score increases
         if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
         {
             //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
-            
-            // Insert an if for park or city
-            int scoreValue = 0;
-            if (currTargetType == "Park")
+            int scoreValue = new int();//da modificare if(tag() parco o città
+            if (currentTargetType == "Park")
             {
-                scoreValue -= 1 ;
+                scoreValue = -1;
+                pointsClicked++;
             }
-            else if (currTargetType == "City")
+            else if (currentTargetType == "City")
             {
-                scoreValue += 1;
+                scoreValue = 1;
+                pointsClicked++;
             }
-
             // Gets the score pop up and toggles it.
             var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
             scorePopUp.Score = scoreValue;
             scorePopUp.Toggle = !scorePopUp.Toggle;
             ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
-
             ASBPlayer.LocalPlayer.Score += scoreValue;
-
             _correctSFX.Play();
         }
         else
@@ -424,62 +600,51 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
             //TODO Modify here for feedback score
             //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
-
             _incorrectSFX.Play();
         }
     }
-
     private void UpdateCurrentStimulus()
     {
         // If we are asking a question, we set the answers.
         if (CurrentStimulus >= 0)
         {
             //stimulusObj.SetActive(true);
-
-
             //stimulus.text = asbStimuliList[stimulusIndex].name;
             if (HasStateAuthority)
             {
-                Debug.LogError("ActivateStimulus: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
+                //Debug.LogError("ActivateStimulus: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
                 ActivateStimulusRPC();
             }
-
             // Clears the trivia message
             asbMessage.text = string.Empty;
-
             // Deisgnate that the local player has not chosen an answer yet.
             ASBPlayer.LocalPlayer.ChosenAnswer = -1;
-
             //Change the game state
             if (HasStateAuthority)
             {
                 GameState = ASBStateGame.ShowStimulus;
             }
         }
-
         // We hide the question element in case a player late joins at the end of the game.
-        if (GameState != ASBStateGame.ShowFeedback && GameState != ASBStateGame.ShowStimulus)
+        /*if (GameState != ASBStateGame.ShowFeedback && GameState != ASBStateGame.ShowStimulus)
         {
             //stimulusObj.SetActive(false);
-            foreach (GameObject stim in asbStimuliList)
+            foreach (GameObject stim in asbStimuliList1p)
             {
                 stim.SetActive(false);
             }
-        }
+        }*/
     }
-
     private void UpdateStimuliShownText()
     {
         if (StimuliShown == 0)
             stimuliShownText.text = "";
         else
-            stimuliShownText.text = "Stimuli shown: " + StimuliShown;
+            stimuliShownText.text = "Stimuli shown: " + StimuliShown + "\nClick effettuati: " + pointsClicked;
     }
-
     public async void LeaveGame()
     {
         await Runner.Shutdown(true, ShutdownReason.Ok);
-
         FusionConnector fc = GameObject.FindObjectOfType<FusionConnector>();
         if (fc)
         {
@@ -487,23 +652,17 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             fc.mainGameObject.SetActive(false);
         }
     }
-
     public void StartNewGame()
     {
         if (HasStateAuthority == false)
             return;
-
         GameState = ASBStateGame.NewRound;
-
         StimuliShown = 0;
-
         // Sets an initial intro timer
         stimTimerLength = 3f;
         stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-
         gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
-        // Player movement isMoving true or false
     }
 
     public void StateAuthorityChanged()
@@ -513,5 +672,12 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             startNewGameBtn.SetActive(Runner.IsSharedModeMasterClient);
         }
     }
-
+    public void For(List<int> lista)
+    {
+        for (int i = 0; i < lista.Count; i++)
+        {
+            TargetPrefabIdxList.Add(lista[i]);
+            // add to the array target prefab the elements of lista
+        }
+    }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3727175143889472955}
   - component: {fileID: -8060899551978912286}
   m_Layer: 0
-  m_Name: YellowSphere
+  m_Name: YellowSphere 1
   m_TagString: City
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 1674457238
+  SortKey: 2096355230
   ObjectInterest: 1
   Flags: 131073
   NestedObjects: []
