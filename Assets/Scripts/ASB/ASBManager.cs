@@ -1,4 +1,5 @@
 using Fusion;
+using Photon.Voice;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -73,11 +74,21 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public int currStimuliPos { get; set; }
     [Networked, Tooltip("Random index for Prefabs")]
     public int randomIndex { get; set; }
+    [Networked]
+    public int selectedTargetPrefabIndex { get; set; }
+
     [Networked, Tooltip("Current target")]
     public string currentTargetType { get; set; }
     [Tooltip("The current state of the game.")]
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
+
+    // We have to make it [Networked] to show to the players the objects
+    //private int[,] ArrayStartEndLists = new int[2, 6];
+
+    // Networked Array for Spawning prefabs
+    [Networked, Capacity(7)]
+    public NetworkArray<int> ArrayStartEndLists => default;
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void DealFeedbackRPC()
@@ -104,6 +115,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
 
         //targetPrefab.gameObject.SetActive(true);
+        /*
         int selectedTargetPrefabIndex;
         Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and randomIndex is " + randomIndex.ToString());
         if (randomIndex != -1)
@@ -114,7 +126,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             selectedTargetPrefabIndex = -1;
         }
-
+        */
         string outputString = "";
 
         // Loop to spawn all prefabs into the scene
@@ -126,34 +138,43 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         NetworkObject selectedTargetPrefab = null;
         //for (int i = 0; i < TargetPrefabIdxList.Count; i++)
         //{
-        if (selectedTargetPrefabIndex >= 0 && selectedTargetPrefabIndex <= 1)
+        
+        // Use a Networked Array to spawn Prefabs in the Scene
+        if (selectedTargetPrefabIndex >= ArrayStartEndLists[0] && selectedTargetPrefabIndex < ArrayStartEndLists[1])
         {
             selectedTargetPrefab = asbStimuliList1p[selectedTargetPrefabIndex];
         }
-        else if (selectedTargetPrefabIndex >= 2 && selectedTargetPrefabIndex <= 3)
+        else if (selectedTargetPrefabIndex >= ArrayStartEndLists[1] && selectedTargetPrefabIndex < ArrayStartEndLists[2])
         {
             selectedTargetPrefab = asbStimuliList2p[selectedTargetPrefabIndex - asbStimuliList1p.Count];
         }
-        else if (selectedTargetPrefabIndex >= 4 && selectedTargetPrefabIndex <= 4)
+        else if (selectedTargetPrefabIndex >= ArrayStartEndLists[2] && selectedTargetPrefabIndex < ArrayStartEndLists[3])
         {
             selectedTargetPrefab = asbStimuliList3p[selectedTargetPrefabIndex - (asbStimuliList1p.Count + asbStimuliList2p.Count)];
         }
-        else if (selectedTargetPrefabIndex >= 5 && selectedTargetPrefabIndex <= 5)
+        else if (selectedTargetPrefabIndex >= ArrayStartEndLists[3] && selectedTargetPrefabIndex < ArrayStartEndLists[4])
         {
             selectedTargetPrefab = asbStimuliList1c[selectedTargetPrefabIndex - (asbStimuliList1p.Count + asbStimuliList2p.Count + asbStimuliList3p.Count)];
         }
-        else if (selectedTargetPrefabIndex >= 6 && selectedTargetPrefabIndex <= 7)
+        else if (selectedTargetPrefabIndex >= ArrayStartEndLists[4] && selectedTargetPrefabIndex < ArrayStartEndLists[5])
         {
-            selectedTargetPrefab = asbStimuliList2c[selectedTargetPrefabIndex - (asbStimuliList3cIds.Count + asbStimuliList2pIds.Count + asbStimuliList1p.Count + asbStimuliList1c.Count)];
+            selectedTargetPrefab = asbStimuliList2c[selectedTargetPrefabIndex - (asbStimuliList3p.Count + asbStimuliList2p.Count + asbStimuliList1p.Count + asbStimuliList1c.Count)];
         }
-        else if (selectedTargetPrefabIndex >= 8 && selectedTargetPrefabIndex <= 9)
+        else if (selectedTargetPrefabIndex >= ArrayStartEndLists[5] && selectedTargetPrefabIndex < ArrayStartEndLists[6])
         {
-            selectedTargetPrefab = asbStimuliList3c[selectedTargetPrefabIndex - (TargetPrefabIdxList.Count - asbStimuliList3pIds.Count)];
+            selectedTargetPrefab = asbStimuliList3c[selectedTargetPrefabIndex - (asbStimuliList3p.Count + asbStimuliList2p.Count + asbStimuliList1p.Count + asbStimuliList1c.Count + asbStimuliList2c.Count)];
         }
+        // Spawn the new object into the scene
         currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
+        // Set the object visible to the player
         currTarget.gameObject.SetActive(true);
+        
+        // Set the tag to the new spawned object
         currentTargetType = currTarget.gameObject.tag;
+        //Print a Debug Message (not visible in the build, although in the Developer Version)
         Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + " and target prefab is " + currentTargetType + " " + currTarget.gameObject.name);
+        // Print on the console the lenght of the array for Target Pregabs (actually 10)
+        Debug.LogError("TargetPrefabIndexList.Count = " + TargetPrefabIdxList.Count.ToString());
         //}
     }
 
@@ -181,7 +202,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("Button displayed, only to the master client, to start a new game.")]
     public GameObject startNewGameBtn;
 
-    // TODO modify this to have an array
+    // TODO modify this to have an array (Done)
     [Networked, Capacity(100)]
     public NetworkLinkedList<int> TargetPrefabIdxList => default;
 
@@ -275,7 +296,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     {
         int lunghezza = 0;
 
-
         // Clear
         asbStimuliList1cIds.Clear();
         asbStimuliList2cIds.Clear();
@@ -284,35 +304,46 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         asbStimuliList2pIds.Clear();
         asbStimuliList3pIds.Clear();
 
+        ArrayStartEndLists.Set(0, lunghezza);
+
         for (int i = 0; i < asbStimuliList1p.Count; i++)
         {
             asbStimuliList1pIds.Add(i);
         }
         lunghezza += asbStimuliList1p.Count;
+        ArrayStartEndLists.Set(1, lunghezza);
+
         for (int i = 0; i < asbStimuliList2p.Count; i++)
         {
             asbStimuliList2pIds.Add(i + lunghezza);
         }
         lunghezza += asbStimuliList2p.Count;
-        for(int i = 0; i < asbStimuliList3p.Count; i++)
+        ArrayStartEndLists.Set(2, lunghezza);
+        for (int i = 0; i < asbStimuliList3p.Count; i++)
         {
             asbStimuliList3pIds.Add(i + lunghezza);
         }
         lunghezza += asbStimuliList3p.Count;
-        for(int i = 0; i < asbStimuliList1c.Count; i++)
+        ArrayStartEndLists.Set(3, lunghezza);
+        for (int i = 0; i < asbStimuliList1c.Count; i++)
         {
             asbStimuliList1cIds.Add(i + lunghezza);
         }
         lunghezza += asbStimuliList1c.Count;
-        for(int i = 0; i < asbStimuliList2c.Count; i++)
+        ArrayStartEndLists.Set(4, lunghezza);
+        for (int i = 0; i < asbStimuliList2c.Count; i++)
         {
             asbStimuliList2cIds.Add(i + lunghezza);
         }
         lunghezza += asbStimuliList2c.Count;
-        for(int i = 0; i < asbStimuliList3c.Count; i++)
+        ArrayStartEndLists.Set(5, lunghezza);
+        for (int i = 0; i < asbStimuliList3c.Count; i++)
         {
             asbStimuliList3cIds.Add(i + lunghezza);
         }
+        // We can also don't do that.
+        lunghezza += asbStimuliList3c.Count;
+        ArrayStartEndLists.Set(6, lunghezza);
     }
 
     private void ShuffleStimuli()
@@ -487,6 +518,15 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     else
                     {
                         randomIndex = -1;
+                    }
+                    Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "and randomIndex is " + randomIndex.ToString());
+                    if (randomIndex != -1)
+                    {
+                        selectedTargetPrefabIndex = TargetPrefabIdxList[randomIndex];
+                    }
+                    else
+                    {
+                        selectedTargetPrefabIndex = -1;
                     }
                     ASBPlayer.LocalPlayer.ChosenAnswer = -1;
                     CurrentStimulus++;
