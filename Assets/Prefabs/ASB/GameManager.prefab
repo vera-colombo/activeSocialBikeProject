@@ -2821,16 +2821,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   asbStimuliList1p:
   - {fileID: 3727175143889472955, guid: 25c33965c868a6144a15e488be321a8c, type: 3}
+  - {fileID: 3727175143889472955, guid: d1c550ee74476e646a649be3ef6b6701, type: 3}
   asbStimuliList2p:
   - {fileID: 2165851154399983788, guid: 35ba4351fab014643ac98939de39fa71, type: 3}
+  - {fileID: 2165851154399983788, guid: 2ebfd46a7dda0b446ab3fb5ff8933053, type: 3}
   asbStimuliList3p:
   - {fileID: 3727175143889472955, guid: 01e99cc81c2cc9145b12e5b8e23a0422, type: 3}
   asbStimuliList1c:
   - {fileID: 3727175143889472955, guid: 569f25a6ff6390643aac01c8f8eebe91, type: 3}
   asbStimuliList2c:
   - {fileID: 2165851154399983788, guid: e7359216264fa5c4fbe21510c27723a9, type: 3}
+  - {fileID: 2165851154399983788, guid: 09c62c13ee1f4e847984ca9b971cb923, type: 3}
   asbStimuliList3c:
   - {fileID: 3727175143889472955, guid: de43850e0dd3ff843b6c8804bc62cf92, type: 3}
+  - {fileID: 3727175143889472955, guid: 071f0eadb1dcf314fb480bfd8237438e, type: 3}
   asbStimuliList1pIds: 00000000
   asbStimuliList2pIds: 01000000
   asbStimuliList3pIds: 02000000
@@ -2840,7 +2844,7 @@ MonoBehaviour:
   stimuliContainerObj: {fileID: 4545798362157561775}
   stimuliObjRight: {fileID: 6344029516828610405}
   stimuliObjLeft: {fileID: 4933534924844965532}
-  _level: 2
+  _level: 3
   _gameTimerLength: 300
   _targetSpeed: 0
   _CurrentStimulus: -1

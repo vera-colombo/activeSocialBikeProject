@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3727175143889472955}
   - component: {fileID: -8060899551978912286}
   m_Layer: 0
-  m_Name: PurpleSphere
+  m_Name: BlueCube
   m_TagString: Park
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4706724456788366220}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &8237983141229935800
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3a0d76aedf863a645aac5e3b6c91b7c8, type: 2}
+  - {fileID: 2100000, guid: e80aa6dd5e3074542be594df03488288, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 1674457238
+  SortKey: 807246194
   ObjectInterest: 1
   Flags: 131073
   NestedObjects: []

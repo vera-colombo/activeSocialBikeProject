@@ -126,29 +126,29 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         NetworkObject selectedTargetPrefab = null;
         //for (int i = 0; i < TargetPrefabIdxList.Count; i++)
         //{
-        if (selectedTargetPrefabIndex == 0)
+        if (selectedTargetPrefabIndex >= 0 && selectedTargetPrefabIndex <= 1)
         {
-            selectedTargetPrefab = asbStimuliList1p[0];
+            selectedTargetPrefab = asbStimuliList1p[selectedTargetPrefabIndex];
         }
-        else if (selectedTargetPrefabIndex == 1)
+        else if (selectedTargetPrefabIndex >= 2 && selectedTargetPrefabIndex <= 3)
         {
-            selectedTargetPrefab = asbStimuliList2p[0];
+            selectedTargetPrefab = asbStimuliList2p[selectedTargetPrefabIndex - asbStimuliList1p.Count];
         }
-        else if (selectedTargetPrefabIndex == 2)
+        else if (selectedTargetPrefabIndex >= 4 && selectedTargetPrefabIndex <= 4)
         {
-            selectedTargetPrefab = asbStimuliList3p[0];
+            selectedTargetPrefab = asbStimuliList3p[selectedTargetPrefabIndex - (asbStimuliList1p.Count + asbStimuliList2p.Count)];
         }
-        else if (selectedTargetPrefabIndex == 3)
+        else if (selectedTargetPrefabIndex >= 5 && selectedTargetPrefabIndex <= 5)
         {
-            selectedTargetPrefab = asbStimuliList1c[0];
+            selectedTargetPrefab = asbStimuliList1c[selectedTargetPrefabIndex - (asbStimuliList1p.Count + asbStimuliList2p.Count + asbStimuliList3p.Count)];
         }
-        else if (selectedTargetPrefabIndex == 4)
+        else if (selectedTargetPrefabIndex >= 6 && selectedTargetPrefabIndex <= 7)
         {
-            selectedTargetPrefab = asbStimuliList2c[0];
+            selectedTargetPrefab = asbStimuliList2c[selectedTargetPrefabIndex - (asbStimuliList3cIds.Count + asbStimuliList2pIds.Count + asbStimuliList1p.Count + asbStimuliList1c.Count)];
         }
-        else if (selectedTargetPrefabIndex == 5)
+        else if (selectedTargetPrefabIndex >= 8 && selectedTargetPrefabIndex <= 9)
         {
-            selectedTargetPrefab = asbStimuliList3c[0];
+            selectedTargetPrefab = asbStimuliList3c[selectedTargetPrefabIndex - (TargetPrefabIdxList.Count - asbStimuliList3pIds.Count)];
         }
         currTarget = Runner.Spawn(selectedTargetPrefab, targetParent.position);
         currTarget.gameObject.SetActive(true);
@@ -182,7 +182,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public GameObject startNewGameBtn;
 
     // TODO modify this to have an array
-    [Networked, Capacity(6)]
+    [Networked, Capacity(100)]
     public NetworkLinkedList<int> TargetPrefabIdxList => default;
 
     #endregion
@@ -253,6 +253,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
+            CreateASBIndexLists();
+
             ShuffleStimuli();
         }
 
@@ -268,6 +270,51 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// <summary>
     /// Shuffles the questions around.
     /// </summary>
+    
+    private void CreateASBIndexLists()
+    {
+        int lunghezza = 0;
+
+
+        // Clear
+        asbStimuliList1cIds.Clear();
+        asbStimuliList2cIds.Clear();
+        asbStimuliList3cIds.Clear();
+        asbStimuliList1pIds.Clear();
+        asbStimuliList2pIds.Clear();
+        asbStimuliList3pIds.Clear();
+
+        for (int i = 0; i < asbStimuliList1p.Count; i++)
+        {
+            asbStimuliList1pIds.Add(i);
+        }
+        lunghezza += asbStimuliList1p.Count;
+        for (int i = 0; i < asbStimuliList2p.Count; i++)
+        {
+            asbStimuliList2pIds.Add(i + lunghezza);
+        }
+        lunghezza += asbStimuliList2p.Count;
+        for(int i = 0; i < asbStimuliList3p.Count; i++)
+        {
+            asbStimuliList3pIds.Add(i + lunghezza);
+        }
+        lunghezza += asbStimuliList3p.Count;
+        for(int i = 0; i < asbStimuliList1c.Count; i++)
+        {
+            asbStimuliList1cIds.Add(i + lunghezza);
+        }
+        lunghezza += asbStimuliList1c.Count;
+        for(int i = 0; i < asbStimuliList2c.Count; i++)
+        {
+            asbStimuliList2cIds.Add(i + lunghezza);
+        }
+        lunghezza += asbStimuliList2c.Count;
+        for(int i = 0; i < asbStimuliList3c.Count; i++)
+        {
+            asbStimuliList3cIds.Add(i + lunghezza);
+        }
+    }
+
     private void ShuffleStimuli()
     {
         Debug.Log("SHUFFLING STIMULI!");
@@ -336,7 +383,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             For(asbStimuliList1pIds);
             For(asbStimuliList2pIds);
             For(asbStimuliList3pIds);
-        }//Prima parco, adesso città
+        } // First park, then city
         if (level == 1)
         {
             int index = Random.Range(3, 6);
@@ -677,7 +724,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         for (int i = 0; i < lista.Count; i++)
         {
             TargetPrefabIdxList.Add(lista[i]);
-            // add to the array target prefab the elements of lista
+            // TODO add to the array target prefab the elements of lista
         }
     }
 }
