@@ -59,6 +59,10 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [SerializeField, Networked]
     public bool AChiTocca { get; set; }
 
+    // Bool variable for singleplayer or multiplauer
+    [SerializeField, Networked, Tooltip("Bool variable checking if singleplayer or multiplayer")]
+    public bool isCollaborative { get; set; }
+
     [Networked, Tooltip("Level.")]
     public int level { get; set; }//numero tra 1 e 3 (compresi)
 
@@ -309,7 +313,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     {
         int lunghezza = 0;
 
-        // Clear
+        // Clear all the lists
         asbStimuliList1cIds.Clear();
         asbStimuliList2cIds.Clear();
         asbStimuliList3cIds.Clear();
@@ -637,17 +641,21 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 stimTimerText.text = "OVER";
             }
         }
-        if (AChiTocca)
+
+        if (isCollaborative)
         {
-            player = ReturnPlayerName(1);
-        }
-        else
-        {
-            player = ReturnPlayerName(2);
-        }
-        if (turnRemainingTime.HasValue)
-        {
-            turnTimerText.text = player + ": " + Mathf.Round(turnRemainingTime.Value).ToString();
+            if (AChiTocca)
+            {
+                player = ReturnPlayerName(1);
+            }
+            else
+            {
+                player = ReturnPlayerName(2);
+            }
+            if (turnRemainingTime.HasValue)
+            {
+                turnTimerText.text = player + ": " + Mathf.Round(turnRemainingTime.Value).ToString();
+            }
         }
     }
 
@@ -707,8 +715,46 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     {
         asbMessage.text = string.Empty;
         // If the player picks the correct answer, their score increases
-
-        if ((AChiTocca == true && ASBPlayer.LocalPlayer.PlayerId == 1) || (AChiTocca == false && ASBPlayer.LocalPlayer.PlayerId == 2))
+        if (isCollaborative)
+        {
+            if ((AChiTocca == true && ASBPlayer.LocalPlayer.PlayerId == 1) || (AChiTocca == false && ASBPlayer.LocalPlayer.PlayerId == 2))
+            {
+                if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
+                {
+                    //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
+                    int scoreValue = new int();//da modificare if(tag() parco o città
+                    if (currentTargetType == "Park")
+                    {
+                        scoreValue = -1;
+                        pointsClicked++;
+                    }
+                    else if (currentTargetType == "City")
+                    {
+                        scoreValue = 1;
+                        pointsClicked++;
+                    }
+                    // Gets the score pop up and toggles it.
+                    var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+                    scorePopUp.Score = scoreValue;
+                    scorePopUp.Toggle = !scorePopUp.Toggle;
+                    ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+                    ASBPlayer.LocalPlayer.Score += scoreValue;
+                    _correctSFX.Play();
+                }
+                else
+                {
+                    // Gets score value and toggles it
+                    var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+                    scorePopUp.Score = 0;
+                    scorePopUp.Toggle = !scorePopUp.Toggle;
+                    ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+                    //TODO Modify here for feedback score
+                    //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
+                    _incorrectSFX.Play();
+                }
+            }
+        }
+        else
         {
             if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
             {
@@ -807,6 +853,15 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
         gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
         turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
+
+        if (ASBPlayer.ASBPlayerRefs.Count == 1)
+        {
+            isCollaborative = false;
+        }
+        else if(ASBPlayer.ASBPlayerRefs.Count > 1)
+        {
+            isCollaborative = true;
+        }
 
     }
 

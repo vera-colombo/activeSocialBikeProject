@@ -2981,7 +2981,8 @@ MonoBehaviour:
   stimuliObjRight: {fileID: 6344029516828610405}
   stimuliObjLeft: {fileID: 4933534924844965532}
   _turnTimerLength: 30
-  AChiTocca: 1
+  _AChiTocca: 0
+  _isCollaborative: 0
   _level: 3
   _gameTimerLength: 203
   _targetSpeed: 0
