@@ -846,7 +846,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 00:00
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -873,7 +873,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2982,7 +2982,7 @@ MonoBehaviour:
   stimuliObjLeft: {fileID: 4933534924844965532}
   _turnTimerLength: 30
   _AChiTocca: 0
-  _isCollaborative: 0
+  _isCollaborative: 1
   _level: 3
   _gameTimerLength: 203
   _targetSpeed: 0

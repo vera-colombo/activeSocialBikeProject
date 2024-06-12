@@ -60,7 +60,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public bool AChiTocca { get; set; }
 
     // Bool variable for singleplayer or multiplauer
-    [SerializeField, Networked, Tooltip("Bool variable checking if singleplayer or multiplayer")]
+    [Networked, Tooltip("Bool variable checking if singleplayer or multiplayer")]
     public bool isCollaborative { get; set; }
 
     [Networked, Tooltip("Level.")]
@@ -288,7 +288,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             // The initial timer for the game is only 3 seconds.
             stimTimerLength = 3;
             stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-            turnTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
+            if(isCollaborative)
+                turnTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
             CreateASBIndexLists();
@@ -568,10 +569,13 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             gameTimer = TickTimer.None;
             GameState = ASBStateGame.GameOver;
         }
-        if (turnTimer.RemainingTime(Runner) == 0)
+        if (isCollaborative)
         {
-            turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
-            AChiTocca = !AChiTocca;
+            if (turnTimer.RemainingTime(Runner) == 0)
+            {
+                turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
+                AChiTocca = !AChiTocca;
+            }
         }
     }
 
@@ -852,7 +856,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         turnTimerLength = 30f;
         stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
         gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
-        turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
+
+        if(isCollaborative)
+            turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
 
         if (ASBPlayer.ASBPlayerRefs.Count == 1)
         {
@@ -862,7 +868,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             isCollaborative = true;
         }
-
     }
 
     public void StateAuthorityChanged()
