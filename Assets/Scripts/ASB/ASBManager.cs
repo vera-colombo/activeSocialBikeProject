@@ -37,6 +37,14 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public List<int> asbStimuliList3cIds; // Equals to 5
     [Tooltip("Container for the stimulus element")]
     public GameObject stimuliContainerObj = null;
+    
+    // Disactivate them when GameOver
+    [SerializeField, Tooltip("Disactivate if Game Over")]
+    public GameObject timers = null;
+    [SerializeField, Tooltip("Disactivate when Game Over")]
+    public GameObject mainElements = null;
+    [SerializeField, Tooltip("End Game")]
+    public GameObject endingGame = null;
 
     [Tooltip("Stimuli obj position right")]
     public Transform stimuliObjRight;
@@ -216,8 +224,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Tooltip("Button displayed to leave the game after a round ends.")]
     public GameObject leaveGameBtn;
 
-    [Tooltip("Button displayed, only to the master client, to start a new game.")]
-    public GameObject startNewGameBtn;
 
     // TODO modify this to have an array (Done)
     [Networked, Capacity(100)]
@@ -639,11 +645,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         }
         else
         {
-            gameTimerText.text = "GAME";
-            if(!stimRemainingTime.HasValue)
-            {
-                stimTimerText.text = "OVER";
-            }
+            timers.SetActive(false);
+            mainElements.SetActive(false);
+            endingGame.SetActive(true);
         }
 
         if (isCollaborative)
@@ -709,7 +713,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             //endGameObject.Hide();
         }
         leaveGameBtn.SetActive(GameState == ASBStateGame.GameOver);
-        startNewGameBtn.SetActive(GameState == ASBStateGame.GameOver && Runner.IsSharedModeMasterClient == true);
     }
     private void OnGameStateGameOver()
     {
@@ -872,10 +875,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
     public void StateAuthorityChanged()
     {
-        if (GameState == ASBStateGame.GameOver)
-        {
-            startNewGameBtn.SetActive(Runner.IsSharedModeMasterClient);
-        }
     }
     public void For(List<int> lista)
     {
