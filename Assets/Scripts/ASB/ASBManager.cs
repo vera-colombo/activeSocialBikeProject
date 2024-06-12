@@ -2,6 +2,7 @@ using Fusion;
 using Photon.Voice;
 using System.Collections.Generic;
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +47,18 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     #region Networked Properties
     [Networked, Tooltip("Timer used for showing stimuli and transitioning between different states.")]
     public TickTimer stimTimer { get; set; }
+
+    // Turn Timer for Players (now only a timer, then check the input from all players)
+    [Networked, Tooltip("Timer used for player turns.")]
+    public TickTimer turnTimer { get; set; }
+
+    [Networked]
+    public float turnTimerLength { get; set; }
+
+    // Bool variable for Player turns
+    [SerializeField, Networked]
+    public bool AChiTocca { get; set; }
+
     [Networked, Tooltip("Level.")]
     public int level { get; set; }//numero tra 1 e 3 (compresi)
 
@@ -186,7 +199,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// Question, answer, and answer highlights
     /// </summary>
     public TextMeshProUGUI stimulus;
-    public TextMeshProUGUI gameTimerText, stimTimerText;
+    public TextMeshProUGUI gameTimerText, stimTimerText, turnTimerText;
     public Image[] answerHighlights;
 
     /// <summary>
@@ -271,7 +284,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             // The initial timer for the game is only 3 seconds.
             stimTimerLength = 3;
             stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-
+            turnTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
             CreateASBIndexLists();
@@ -503,6 +516,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     {
         // We check to see if any player has chosen answer, and if so, go to the show feedback state. // ACTIVE check if we are colliding a target
 
+
         if (!gameTimer.Expired(Runner))
         {
             if (stimTimer.Expired(Runner)) // if when the timer expires we are in the show stimulus state, it means that no answer has been chosen
@@ -543,7 +557,6 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     GameState = ASBStateGame.GameOver;
                 }
             }
-
         }
         else // game over after the final duration has been reached
         {
@@ -551,7 +564,11 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             gameTimer = TickTimer.None;
             GameState = ASBStateGame.GameOver;
         }
-
+        if (turnTimer.RemainingTime(Runner) == 0)
+        {
+            turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
+            AChiTocca = !AChiTocca;
+        }
     }
 
     /// <summary>
@@ -593,6 +610,10 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         //Debug.LogError("Update: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
         // Updates the timer visual
         float? stimRemainingTime = stimTimer.RemainingTime(Runner);
+        float? turnRemainingTime = turnTimer.RemainingTime(Runner);
+
+        string player;
+
         if (stimRemainingTime.HasValue)
         {
             stimTimerText.text = Mathf.Round(stimRemainingTime.Value).ToString();
@@ -605,13 +626,43 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
         if (gameRemainingTime.HasValue)
         {
-            gameTimerText.text = Mathf.Round(gameRemainingTime.Value).ToString();
+            int tempo = (int) Mathf.Round(gameRemainingTime.Value);
+            gameTimerText.text = (tempo/60).ToString() + ':' + (tempo%60).ToString();
         }
         else
         {
-            gameTimerText.text = "0";
+            gameTimerText.text = "GAME";
+            if(!stimRemainingTime.HasValue)
+            {
+                stimTimerText.text = "OVER";
+            }
+        }
+        if (AChiTocca)
+        {
+            player = ReturnPlayerName(1);
+        }
+        else
+        {
+            player = ReturnPlayerName(2);
+        }
+        if (turnRemainingTime.HasValue)
+        {
+            turnTimerText.text = player + ": " + Mathf.Round(turnRemainingTime.Value).ToString();
         }
     }
+
+    public string ReturnPlayerName(int id)
+    {
+        foreach(ASBPlayer v in ASBPlayer.ASBPlayerRefs)
+        {
+            if(v.PlayerId == id)
+            {
+                return v.PlayerName.ToString();
+            }
+        }
+        return null;
+    }
+
     private void OnASBGameStateChanged()
     {
         // If showin an answer, we show which players got the question correct and increase their score.
@@ -656,40 +707,45 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     {
         asbMessage.text = string.Empty;
         // If the player picks the correct answer, their score increases
-        if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
+
+        if ((AChiTocca == true && ASBPlayer.LocalPlayer.PlayerId == 1) || (AChiTocca == false && ASBPlayer.LocalPlayer.PlayerId == 2))
         {
-            //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
-            int scoreValue = new int();//da modificare if(tag() parco o città
-            if (currentTargetType == "Park")
+            if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
             {
-                scoreValue = -1;
-                pointsClicked++;
+                //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
+                int scoreValue = new int();//da modificare if(tag() parco o città
+                if (currentTargetType == "Park")
+                {
+                    scoreValue = -1;
+                    pointsClicked++;
+                }
+                else if (currentTargetType == "City")
+                {
+                    scoreValue = 1;
+                    pointsClicked++;
+                }
+                // Gets the score pop up and toggles it.
+                var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+                scorePopUp.Score = scoreValue;
+                scorePopUp.Toggle = !scorePopUp.Toggle;
+                ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+                ASBPlayer.LocalPlayer.Score += scoreValue;
+                _correctSFX.Play();
             }
-            else if (currentTargetType == "City")
+            else
             {
-                scoreValue = 1;
-                pointsClicked++;
+                // Gets score value and toggles it
+                var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
+                scorePopUp.Score = 0;
+                scorePopUp.Toggle = !scorePopUp.Toggle;
+                ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
+                //TODO Modify here for feedback score
+                //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
+                _incorrectSFX.Play();
             }
-            // Gets the score pop up and toggles it.
-            var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
-            scorePopUp.Score = scoreValue;
-            scorePopUp.Toggle = !scorePopUp.Toggle;
-            ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
-            ASBPlayer.LocalPlayer.Score += scoreValue;
-            _correctSFX.Play();
-        }
-        else
-        {
-            // Gets score value and toggles it
-            var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
-            scorePopUp.Score = 0;
-            scorePopUp.Toggle = !scorePopUp.Toggle;
-            ASBPlayer.LocalPlayer.ScorePopUp = scorePopUp;
-            //TODO Modify here for feedback score
-            //ASBPlayer.LocalPlayer.Expression = ASBPlayer.AvatarExpressions.Angry_WrongAnswer;
-            _incorrectSFX.Play();
         }
     }
+        
     private void UpdateCurrentStimulus()
     {
         // If we are asking a question, we set the answers.
@@ -747,8 +803,10 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         StimuliShown = 0;
         // Sets an initial intro timer
         stimTimerLength = 3f;
+        turnTimerLength = 30f;
         stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
         gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
+        turnTimer = TickTimer.CreateFromSeconds(Runner, turnTimerLength);
 
     }
 

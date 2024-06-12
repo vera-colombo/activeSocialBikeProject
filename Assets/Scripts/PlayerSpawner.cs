@@ -28,6 +28,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 else
                     testPlayer.PlayerName = playerName;
 
+                testPlayer.PlayerId = resultingPlayer.StateAuthority.PlayerId;
+
                 // TODO Active assign random avatar 3D model
                 // Assigns a random avatar
                 testPlayer.ChosenAvatar = Random.Range(0, testPlayer.avatarSprites.Length);

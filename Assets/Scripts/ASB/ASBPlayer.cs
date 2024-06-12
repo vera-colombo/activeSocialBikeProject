@@ -22,6 +22,9 @@ public class ASBPlayer : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnPlayerNameChanged))]
     public NetworkString<_16> PlayerName { get; set; }
 
+    [Networked, OnChangedRender(nameof(OnPlayerIdChanged))]
+    public int PlayerId { get; set; }
+
     [Tooltip("Which character has the player chosen.")]
     [Networked, OnChangedRender(nameof(OnAvatarChanged))]
     public int ChosenAvatar { get; set; } = -1;
@@ -290,6 +293,11 @@ public class ASBPlayer : NetworkBehaviour
     void OnPlayerNameChanged()
     {
         nameText.text = PlayerName.Value;
+    }
+
+    void OnPlayerIdChanged()
+    {
+        
     }
 
     void OnMasterClientChanged()
