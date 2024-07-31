@@ -7,6 +7,15 @@ TagManager:
   - City
   - Park
   - ASBManager
+  - Terrain
+  - Synty Tree
+  - PW - Nature
+  - PW - Prop
+  - PW - Building
+  - water
+  - Synty Medium Farm
+  - Synty Small Farm
+  - StimuliPath
   layers:
   - Default
   - TransparentFX

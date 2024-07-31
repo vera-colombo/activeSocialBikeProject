@@ -1,0 +1,9 @@
+#
+# Bike COM
+COM=6
+#
+# Bike BaudRate
+BaudRate =9600
+#
+# Bike saturation measure enabled (1 for yes, 0 for no)
+Saturation = 0
