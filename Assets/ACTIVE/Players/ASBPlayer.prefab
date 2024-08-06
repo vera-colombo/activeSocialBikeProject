@@ -4779,7 +4779,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serialPort: 
   currentWL: 0
-  simulation: 1
+  simulation: 0
+  minSimSpeed: 50
+  maxSimSpeed: 60
 --- !u!1 &6037714580559420723
 GameObject:
   m_ObjectHideFlags: 0

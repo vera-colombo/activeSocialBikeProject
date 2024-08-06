@@ -41,7 +41,7 @@ public class StimuliMovement : NetworkBehaviour
             if (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM > 0)
             {
 
-            mySpeed = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM*0.05f;
+            mySpeed = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM*0.035f;
             Debug.Log("my speed is" + mySpeed);
             float distance = Vector3.Distance(pathToFollow.path_objs[currentWayPointID].position, transform.position);
             transform.position = Vector3.MoveTowards(transform.position, pathToFollow.path_objs[currentWayPointID].position, Runner.DeltaTime * mySpeed);

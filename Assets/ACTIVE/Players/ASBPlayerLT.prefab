@@ -4671,7 +4671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serialPort: 
   currentWL: 0
-  simulation: 1
+  simulation: 0
   minSimSpeed: 200
   maxSimSpeed: 300
 --- !u!114 &8570208366330249867
@@ -4705,7 +4705,6 @@ MonoBehaviour:
   conversionFactor: 0.05
   cycleErgometerManager: {fileID: 5241099827210419303}
   _isMoving: 1
-  PlayerSpeed: 2
 --- !u!114 &7145736138378112392
 MonoBehaviour:
   m_ObjectHideFlags: 0

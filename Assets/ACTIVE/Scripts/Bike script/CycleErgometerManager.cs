@@ -189,12 +189,12 @@ public class CycleErgometerManager : MonoBehaviour
                 simulation = true;
             }
             //TODO test only
-            if (Input.GetKeyDown(KeyCode.L)) 
+            if (Input.GetKeyDown(KeyCode.W)) 
             {
                 if (cycleErgometer != null) 
                 {
-                    SetLoad(20);
-                    Debug.Log("set load");
+                    SetLoad(currentWL + 5);
+                    Debug.Log("increase load +5 - now WL is " + cycleErgometer.CurrLoad.ToString());
                 }
             }
 
