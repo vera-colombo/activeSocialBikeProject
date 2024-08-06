@@ -39,7 +39,12 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 testPlayer.transform.position = position;
 
                 EditorPathScripts path = FusionConnector.Instance.pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
-                testPlayer.GetComponent<MoveOnPathScript>().pathToFollow = path;
+                
+
+                //GameObject path = FusionConnector.Instance.pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
+                //testPlayer.GetComponent<PathSpline_LT>().path = path;
+                testPlayer.GetComponent<PathSpline_LT>().CreatePath(path.path_objs);
+                testPlayer.GetComponent<MoveOnPath_LT>().InitPlayerOnPath();
             }
         }
 

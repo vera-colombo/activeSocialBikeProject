@@ -24,6 +24,8 @@ public class CycleErgometerManager : MonoBehaviour
     protected CycleErgometerP10 cycleErgometer;
 
     public bool simulation;
+    public int minSimSpeed = 50;
+    public int maxSimSpeed = 60;
 
     public CycleErgometerP10 CycleErgometer
     {
@@ -152,7 +154,7 @@ public class CycleErgometerManager : MonoBehaviour
         else
         {
             //Debug.LogError("*** setting simulated data");
-            float r = UnityEngine.Random.Range(50, 60);
+            float r = UnityEngine.Random.Range(minSimSpeed, maxSimSpeed);
 
             speed = r;
             Debug.Log("I am " + gameObject.name + " and speed is " + speed.ToString());

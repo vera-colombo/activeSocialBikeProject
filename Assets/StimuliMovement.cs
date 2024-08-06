@@ -33,40 +33,16 @@ public class StimuliMovement : NetworkBehaviour
     public float rotationSpeed = 5.0f;
     public override void Spawned()
     {
-        //stimuliSplineController = GetComponent<SplineController>();
-        //stimuliSplineController.Spline = GameObject.FindGameObjectWithTag("Spline").GetComponent<CurvySpline>();
         pathToFollow = GameObject.FindGameObjectWithTag("StimuliPath").GetComponent<EditorPathScripts>();
     }
     public override void FixedUpdateNetwork()
     {
-        if (ASBPlayer.LocalPlayer.GetComponent<MoveOnPathScript>().PlayerSpeed > 0) 
-        {
-            //// Calculate and set the speed based on RPM
-            //float adjustedSpeed = CalculateSpeedFromRPM(mySpeed);
-            //stimuliSplineController.Speed = adjustedSpeed;
-            //if (mySpeed > 0)
-            //{
-            //    if (!isCycling)
-            //    {
-            //        // Start cycling
-            //        isCycling = true;
-            //        stimuliSplineController.PlayAutomatically = true;
-            //    }
+        //if (ASBPlayer.LocalPlayer.GetComponent<MoveOnPathScript>().PlayerSpeed > 0)
+            if (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM > 0)
+            {
 
-            //}
-            //else
-            //{
-            //    if (isCycling)
-            //    {
-            //        // Stop cycling
-            //        isCycling = false;
-            //        stimuliSplineController.Speed = 0f;
-            //        stimuliSplineController.PlayAutomatically = false;
-            //    }
-            //}
-
-            //transform.position += mySpeed * transform.forward * Runner.DeltaTime;
-            mySpeed = ASBPlayer.LocalPlayer.GetComponent<MoveOnPathScript>().PlayerSpeed - 0.4f;
+            mySpeed = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM*0.05f;
+            Debug.Log("my speed is" + mySpeed);
             float distance = Vector3.Distance(pathToFollow.path_objs[currentWayPointID].position, transform.position);
             transform.position = Vector3.MoveTowards(transform.position, pathToFollow.path_objs[currentWayPointID].position, Runner.DeltaTime * mySpeed);
 
@@ -85,12 +61,7 @@ public class StimuliMovement : NetworkBehaviour
             }
         }
     }
-    // Update is called once per frame
-    //public void Move(float speed)
-    //{
-    //    moved = true;
-    //    mySpeed = speed;        
-    //}
+
 
 
 }

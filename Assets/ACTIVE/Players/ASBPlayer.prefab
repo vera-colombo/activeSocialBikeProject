@@ -1495,6 +1495,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2808490330802547247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2398738527959946973}
+  m_Layer: 0
+  m_Name: CameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2398738527959946973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2808490330802547247}
+  m_LocalRotation: {x: -0, y: 0.0879395, z: -0, w: 0.9961258}
+  m_LocalPosition: {x: 0.08, y: 1.9, z: 0.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1600856214535923617}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2842814050832626494
 GameObject:
   m_ObjectHideFlags: 0
@@ -4342,6 +4373,7 @@ RectTransform:
   - {fileID: 351738054090271964}
   - {fileID: 4826422930742331750}
   - {fileID: 3849684181919921760}
+  - {fileID: 2398738527959946973}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4620,6 +4652,7 @@ MonoBehaviour:
   _onChangeAvatarAudio: {fileID: 7519474593843839005}
   _scorePopUpText: {fileID: 1877908863329579037}
   _scorePopUpAnimator: {fileID: 3277131136453734807}
+  cameraTarget: {fileID: 2398738527959946973}
   _voiceNetworkObject: {fileID: 8073683509005089337}
   _recorder: {fileID: 3976759169183892864}
   _canvasObjs: {fileID: 837269257663075199}
@@ -4655,7 +4688,7 @@ MonoBehaviour:
   bikeSplineController: {fileID: 2660759220781500118}
   speedScalingFactor: 0.001
   ergometerManager: {fileID: 5241099827210419303}
-  _isMoving: 0
+  _isMoving: 1
 --- !u!114 &2660759220781500118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4676,7 +4709,7 @@ MonoBehaviour:
   m_Speed: 0
   m_Direction: 0
   m_Clamping: 1
-  m_PlayAutomatically: 0
+  m_PlayAutomatically: 1
   m_OrientationMode: 1
   m_LockRotation: 1
   m_OrientationAxis: 0
@@ -4689,7 +4722,7 @@ MonoBehaviour:
   onInitialized:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7371264343845439181}
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
@@ -4701,7 +4734,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2660759220781500118}
         m_TargetAssemblyTypeName: FluffyUnderware.Curvy.Controllers.CurvyController,
           Assembly-CSharp-firstpass
         m_MethodName: set_PlayAutomatically
@@ -4747,7 +4780,6 @@ MonoBehaviour:
   serialPort: 
   currentWL: 0
   simulation: 1
-  saturationImage: {fileID: 0}
 --- !u!1 &6037714580559420723
 GameObject:
   m_ObjectHideFlags: 0

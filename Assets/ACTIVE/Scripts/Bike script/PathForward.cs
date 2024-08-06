@@ -25,11 +25,12 @@ public class PathForward : NetworkBehaviour
 
     private void Awake()
     {
-        bikeSplineController.Spline = GameObject.FindGameObjectWithTag("Spline").GetComponent<CurvySpline>();
+        
     }
     public override void Spawned()
     {
-        //isCycling = false;
+        bikeSplineController.Spline = GameObject.FindGameObjectWithTag("Spline").GetComponent<CurvySpline>();
+        isCycling = false;
         bikeSplineController.Speed = 0f;
         bikeSplineController.PlayAutomatically = false;
 
@@ -59,7 +60,7 @@ public class PathForward : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        // Only move own player and not every other player. Each player controls its own player object.
+        //Only move own player and not every other player.Each player controls its own player object.
         if (HasStateAuthority == false)
         {
             return;
@@ -71,7 +72,7 @@ public class PathForward : NetworkBehaviour
             if (ergometerManager != null)
             {
                 float currentRPM = ergometerManager.CurrentRPM;
-                Debug.Log("Current RPM: " + currentRPM);
+                Debug.Log(gameObject.name + " Current RPM: " + currentRPM);
 
                 // Check if RPM is greater than zero to determine if the user is cycling
                 if (currentRPM > 0)

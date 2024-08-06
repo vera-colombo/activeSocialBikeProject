@@ -4347,11 +4347,12 @@ GameObject:
   - component: {fileID: 2838805805727598802}
   - component: {fileID: 2428751678920588255}
   - component: {fileID: -7497272077189268888}
-  - component: {fileID: 1941775027233903678}
   - component: {fileID: 5241099827210419303}
-  - component: {fileID: 5376942281001074613}
+  - component: {fileID: 8570208366330249867}
+  - component: {fileID: 2272570561416133534}
+  - component: {fileID: 7145736138378112392}
   m_Layer: 0
-  m_Name: ASBPlayer 1
+  m_Name: ASBPlayerLT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4400,8 +4401,8 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 8073683509005089337}
   - {fileID: -7497272077189268888}
-  - {fileID: 1941775027233903678}
-  - {fileID: 5376942281001074613}
+  - {fileID: 2272570561416133534}
+  - {fileID: 7145736138378112392}
 --- !u!222 &5964223792493895517
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4656,22 +4657,6 @@ MonoBehaviour:
   _recorder: {fileID: 3976759169183892864}
   _canvasObjs: {fileID: 837269257663075199}
   Camera: {fileID: 0}
---- !u!114 &1941775027233903678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5969238000153587579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
 --- !u!114 &5241099827210419303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4687,7 +4672,9 @@ MonoBehaviour:
   serialPort: 
   currentWL: 0
   simulation: 1
---- !u!114 &5376942281001074613
+  minSimSpeed: 200
+  maxSimSpeed: 300
+--- !u!114 &8570208366330249867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4696,17 +4683,45 @@ MonoBehaviour:
   m_GameObject: {fileID: 5969238000153587579}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7c64cd68d571e74bb0eaad6caa28aae, type: 3}
+  m_Script: {fileID: 11500000, guid: 9ba5806444fdcc8478afbfcc17e34a72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathToFollow: {fileID: 0}
-  currentWayPointID: 0
-  PlayerSpeed: 2
-  rotationSpeed: 1
-  pathName: 
+  cubeTransforms: []
+  path: {fileID: 0}
+  cubeList: []
+--- !u!114 &2272570561416133534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969238000153587579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c1697cff8a542141bd59a6752df6fa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 8358165163943569204}
   conversionFactor: 0.05
   cycleErgometerManager: {fileID: 5241099827210419303}
   _isMoving: 1
+  PlayerSpeed: 2
+--- !u!114 &7145736138378112392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969238000153587579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 1
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &6037714580559420723
 GameObject:
   m_ObjectHideFlags: 0
@@ -7599,5 +7614,10 @@ PrefabInstance:
 --- !u!4 &4826422930742331750 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 306121337447059535, guid: 99b86df744985ef41bf79fe052161a3f, type: 3}
+  m_PrefabInstance: {fileID: 5099598329952688425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8358165163943569204 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3835733481617882653, guid: 99b86df744985ef41bf79fe052161a3f, type: 3}
   m_PrefabInstance: {fileID: 5099598329952688425}
   m_PrefabAsset: {fileID: 0}
