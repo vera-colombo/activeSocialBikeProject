@@ -21,19 +21,38 @@ public class StimuliMovement : NetworkBehaviour
 
     // The initial position
     protected Vector3 initialPosition;
-    protected Quaternion initialRotation;
-    // Current waypoint id = the integer in the array of path points
-    public int currentWayPointID;
+    //protected Quaternion initialRotation;
+    //// Current waypoint id = the integer in the array of path points
+    //public int currentWayPointID;
 
     
-    // The distance between the pivot point of the object and point in the curve. The small the distance the smoother the movement on the path.
-    private float reachDistance = 1.0f;
+    //// The distance between the pivot point of the object and point in the curve. The small the distance the smoother the movement on the path.
+    //private float reachDistance = 1.0f;
 
-    // The rotation speed on the curve when we are looking at the next point
-    public float rotationSpeed = 5.0f;
+    //// The rotation speed on the curve when we are looking at the next point
+    //public float rotationSpeed = 5.0f;
+
+    protected LTSpline spline;
+    public GameObject player;
+    protected float iter = 0;
+    protected List<Vector3> pathElements; // The cubes to be interpolated along the path
+    private float stimuli_speed = 2f;
     public override void Spawned()
     {
         pathToFollow = GameObject.FindGameObjectWithTag("StimuliPath").GetComponent<EditorPathScripts>();
+        GetComponent<PathSpline_LT>().CreatePath(pathToFollow.path_objs);
+        InitStimuliOnPath();
+    }
+
+    public void InitStimuliOnPath()
+    {
+        pathElements = this.GetComponent<PathSpline_LT>().cubeList;
+
+        // Place the bike in the starting position
+        transform.position = pathElements[0];
+
+        // Create the spline
+        spline = new LTSpline(pathElements.ToArray());
     }
     public override void FixedUpdateNetwork()
     {
@@ -41,24 +60,46 @@ public class StimuliMovement : NetworkBehaviour
             if (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM > 0)
             {
 
-            mySpeed = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM*0.035f;
-            Debug.Log("my speed is" + mySpeed);
-            float distance = Vector3.Distance(pathToFollow.path_objs[currentWayPointID].position, transform.position);
-            transform.position = Vector3.MoveTowards(transform.position, pathToFollow.path_objs[currentWayPointID].position, Runner.DeltaTime * mySpeed);
-
-            var rotation = Quaternion.LookRotation(pathToFollow.path_objs[currentWayPointID].position - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Runner.DeltaTime * rotationSpeed);
-
-            if (distance <= reachDistance)
+            // Only move own player and not every other player. Each player controls its own player object.
+            if (HasStateAuthority == false)
             {
-                currentWayPointID++;
+                return;
             }
 
-            // Loop
-            if (currentWayPointID >= pathToFollow.path_objs.Count) // gestire la fine e ripartire dall'inizio
-            {
-                currentWayPointID = 0;
-            }
+            
+                //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
+                //PlayerSpeed = cycleErgometerManager.CurrentRPM * conversionFactor;
+                //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
+                spline.place(transform, iter);
+                stimuli_speed = 0.0055f * (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM / 500);
+                iter += Runner.DeltaTime * stimuli_speed;
+            
+                if (iter >= 1)
+                {
+                    transform.position = pathElements[0];
+                    iter = 0;
+                }
+            
+
+
+            //mySpeed = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM*0.035f;
+            //Debug.Log("my speed is" + mySpeed);
+            //float distance = Vector3.Distance(pathToFollow.path_objs[currentWayPointID].position, transform.position);
+            //transform.position = Vector3.MoveTowards(transform.position, pathToFollow.path_objs[currentWayPointID].position, Runner.DeltaTime * mySpeed);
+
+            //var rotation = Quaternion.LookRotation(pathToFollow.path_objs[currentWayPointID].position - transform.position);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Runner.DeltaTime * rotationSpeed);
+
+            //if (distance <= reachDistance)
+            //{
+            //    currentWayPointID++;
+            //}
+
+            //// Loop
+            //if (currentWayPointID >= pathToFollow.path_objs.Count) // gestire la fine e ripartire dall'inizio
+            //{
+            //    currentWayPointID = 0;
+            //}
         }
     }
 

@@ -9,7 +9,8 @@ using UnityEngine;
 public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
 {
     public GameObject PlayerPrefab;
-
+    // TODO test only
+    public bool isPark = true;
     public void PlayerJoined(PlayerRef player)
     {
         if (player == Runner.LocalPlayer)
@@ -38,13 +39,27 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 Vector3 position = FusionConnector.Instance.playerContainer[resultingPlayer.StateAuthority.PlayerId - 1].position;
                 testPlayer.transform.position = position;
 
-                EditorPathScripts path = FusionConnector.Instance.pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
-                
+                EditorPathScripts path;
+                if (FusionConnector.Instance.currentScenario == "Park") 
+                {
+                    FusionConnector.Instance.park_pathContainerObj.SetActive(true);
+                    path = FusionConnector.Instance.park_pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
+                    FusionConnector.Instance.park_Scenario.SetActive(true);
+                }
+                else 
+                {
+                    FusionConnector.Instance.city_pathContainerObj.SetActive(true);
+                    path = FusionConnector.Instance.city_pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
+                    FusionConnector.Instance.city_Scenario.SetActive(true);
+                }
+
+
 
                 //GameObject path = FusionConnector.Instance.pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
                 //testPlayer.GetComponent<PathSpline_LT>().path = path;
                 testPlayer.GetComponent<PathSpline_LT>().CreatePath(path.path_objs);
                 testPlayer.GetComponent<MoveOnPath_LT>().InitPlayerOnPath();
+                // TODO Add here the session settings
             }
         }
 

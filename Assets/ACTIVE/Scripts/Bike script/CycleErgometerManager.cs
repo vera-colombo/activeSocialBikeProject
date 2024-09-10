@@ -124,6 +124,7 @@ public class CycleErgometerManager : MonoBehaviour
             //errGameObj.SetActive(true);
             //errGameObj.GetComponentInChildren<Text>().text = "Cicloergometro non trovato";
             Debug.LogError("**** Cycle-ergometer error");
+            SetLoad(5);
             return;
         }
 

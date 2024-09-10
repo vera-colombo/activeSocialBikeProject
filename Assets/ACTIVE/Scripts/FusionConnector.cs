@@ -36,9 +36,15 @@ public class FusionConnector : MonoBehaviour
     public NetworkObject asbGamePrefab;
 
     public Transform[] playerContainer;
-    public EditorPathScripts[] pathContainer;
+    public EditorPathScripts[] park_pathContainer;
+    public GameObject park_pathContainerObj;
+    public EditorPathScripts[] city_pathContainer;
+    public GameObject city_pathContainerObj;
+    public GameObject park_Scenario;
+    public GameObject city_Scenario;
     public Transform playerCanvasContainer;
 
+    public string currentScenario;
     [Tooltip("The message shown before starting the game.")]
     public TextMeshProUGUI preGameMessage;
 
@@ -100,6 +106,11 @@ public class FusionConnector : MonoBehaviour
         }
 
         canvasGroup.interactable = true;
+    }
+
+    public void SetScenario(string _s) 
+    {
+        currentScenario = _s;
     }
 
     public void GoToMainMenu()

@@ -10,7 +10,7 @@ public class MoveOnPath_LT : NetworkBehaviour
     protected float iter = 0;
     protected List<Vector3> pathElements; // The cubes to be interpolated along the path
 
-    public float conversionFactor = 0.05f;
+    public float conversionFactor = 0.007f;
     public CycleErgometerManager cycleErgometerManager;
     [Networked]
     public bool isMoving { get; set; }
@@ -22,7 +22,7 @@ public class MoveOnPath_LT : NetworkBehaviour
         get { return player_speed; }
     }
 
-    // Start is called before the first frame update
+    // Start is called before the first frame 
     public override void Spawned()
     {
         base.Spawned();
@@ -53,7 +53,7 @@ public class MoveOnPath_LT : NetworkBehaviour
             //PlayerSpeed = cycleErgometerManager.CurrentRPM * conversionFactor;
             //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
             spline.place(transform, iter);
-            player_speed = 0.0055f * (cycleErgometerManager.CurrentRPM / 500);
+            player_speed = conversionFactor * (cycleErgometerManager.CurrentRPM / 500);
             iter += Runner.DeltaTime * PlayerSpeed;
 
             if (iter >= 1) 

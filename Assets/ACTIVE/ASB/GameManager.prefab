@@ -439,8 +439,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -843,7 +843,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1441584003649400994}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -29.8, y: 3.3, z: 46.3}
+  m_LocalPosition: {x: -106, y: 3.3, z: 625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1134,8 +1134,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1320,7 +1320,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2278396243159659725}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.5, y: 2, z: 50.5}
+  m_LocalPosition: {x: 27, y: 2, z: 632}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2253,6 +2253,7 @@ GameObject:
   - component: {fileID: 2743352605133166266}
   - component: {fileID: 5076395964429568234}
   - component: {fileID: 6403752473105861733}
+  - component: {fileID: 6258384347518070676}
   m_Layer: 0
   m_Name: StimuliContainer 1
   m_TagString: Untagged
@@ -2268,7 +2269,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4545798362157561775}
   m_LocalRotation: {x: -0, y: -0.78048974, z: -0, w: 0.6251686}
-  m_LocalPosition: {x: -132.58, y: 55.03408, z: 23.01}
+  m_LocalPosition: {x: -132.58, y: 0, z: 23.01}
   m_LocalScale: {x: 0.115555555, y: 0.115555555, z: 0.115555555}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2291,8 +2292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   asbManager: {fileID: 1629637427885574797}
   pathToFollow: {fileID: 0}
-  currentWayPointID: 0
-  rotationSpeed: 5
+  player: {fileID: 0}
 --- !u!114 &5076395964429568234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2328,6 +2328,21 @@ MonoBehaviour:
   SyncParent: 1
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &6258384347518070676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4545798362157561775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ba5806444fdcc8478afbfcc17e34a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubeTransforms: []
+  path: {fileID: 0}
+  cubeList: []
 --- !u!1 &4570667652269790866
 GameObject:
   m_ObjectHideFlags: 0
@@ -2615,8 +2630,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3706,8 +3721,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
