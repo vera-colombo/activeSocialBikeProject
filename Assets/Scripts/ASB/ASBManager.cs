@@ -104,6 +104,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
     [Networked, Tooltip("Current target")]
     public string currentTargetType { get; set; }
+
+    public int bonus = 0;
+
     [Tooltip("The current state of the game.")]
     [Networked, OnChangedRender(nameof(OnASBGameStateChanged))]
     public ASBStateGame GameState { get; set; } = ASBStateGame.Intro;
@@ -236,8 +239,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Min(1)]
     public float maxStimuli; // this could be remove in the final version because the game stops when the duration expires
 
-    [Tooltip("The amount of time the stimulus will be shown.")]
-    public float stimulusLength = 30;
+    [Networked, Tooltip("The amount of time the stimulus will be shown.")]
+    public int stimulusLength { get; set; }
 
     [Tooltip("The minimum number of points earned for getting a question correct")]
     private int pointsClicked = 0;
@@ -294,7 +297,22 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             // The initial timer for the game is only 3 seconds.
             stimTimerLength = 3;
             stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-            if(isCollaborative)
+            
+            // Get isCollaborative variable from FusionConnector.cs
+            isCollaborative = GameObject.FindObjectOfType<FusionConnector>().isCollaborative;
+
+            // Get level variable from FusionConnector.cs
+            level = GameObject.FindObjectOfType<FusionConnector>().level;
+
+            // Get spawn frequency variable from FusionConnector.cs
+            stimulusLength = GameObject.FindObjectOfType<FusionConnector>().stimulusLenght;
+
+            if(GameObject.FindAnyObjectByType<FusionConnector>().isBonus)
+            {
+                bonus = GameObject.FindObjectOfType<FusionConnector>().bonus - 1;
+            }
+            
+            if (isCollaborative)
                 turnTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
             gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
 
@@ -737,7 +755,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     }
                     else if (currentTargetType == "City")
                     {
-                        scoreValue = 1;
+                        scoreValue = 1 + bonus;
                         pointsClicked++;
                     }
                     // Gets the score pop up and toggles it.
@@ -774,7 +792,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 }
                 else if (currentTargetType == "City")
                 {
-                    scoreValue = 1;
+                    scoreValue = 1 + bonus;
                     pointsClicked++;
                 }
                 // Gets the score pop up and toggles it.
@@ -833,10 +851,21 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     }
     private void UpdateStimuliShownText()
     {
+        string text = string.Empty;
+
+        if(isCollaborative)
+        {
+            text = "Cooperativo";
+        }
+        else
+        {
+            text = "Competitivo";
+        }
+
         if (StimuliShown == 0)
             stimuliShownText.text = "";
         else
-            stimuliShownText.text = "Stimuli shown: " + StimuliShown + "\nClick effettuati: " + pointsClicked;
+            stimuliShownText.text = "Stimuli shown: " + StimuliShown + "\nClick effettuati: " + pointsClicked + "\n" + text + "\nLivello: " + level + "\nFrequenza: " + stimulusLength;
     }
     public async void LeaveGame()
     {

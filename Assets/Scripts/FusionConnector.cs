@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FusionConnector : MonoBehaviour
 {
@@ -44,6 +45,26 @@ public class FusionConnector : MonoBehaviour
     public static FusionConnector Instance { get; private set; }
 
     public bool isGameStarted = false; // Dichiarazione di isGameStarted
+
+    // Modalità di gioco coperativo o competitivo (sincronizzata allo stesso valore per entrambi i player)
+    [Networked, Tooltip("Syncronized Type of Gameplay")] 
+    public bool isCollaborative {  get; set; }
+
+    // Qui dobbiamo fare selezionare tramite tasti il livello per entrambi i giocatori (essendo una variabile Networked)
+    // Il livello è uguale entrambi i player all'interno della stessa lobby.
+    // Poi dovremmo fare lo slider (prefab già datoci da Vera), e tutti gli altri bottoni quali punti bonus e velocità di spawn.
+    // Dopodiché possiamo definire questa piccola parte conclusa
+    [Networked]
+    public int level { get; set; }
+
+    // Frequenza di spawn dei prefab all'interno della scena di gioco
+    [Networked, Tooltip("Frequenza di spawn")]
+    public int stimulusLenght { get; set; }
+
+    public int bonus;
+    public bool isBonus;
+    public GameObject bonusnumbers;
+    public int n;
 
     private void Awake()
     {
@@ -151,8 +172,6 @@ public class FusionConnector : MonoBehaviour
             return;
         }
 
-
-
         // If no ASB manager has been made and we are the master mode client.
         // Redundant but being safe.
         if (runner.IsSharedModeMasterClient && !ASBManager.ASBManagerPresent)
@@ -161,5 +180,76 @@ public class FusionConnector : MonoBehaviour
 
             showGameButton.SetActive(false);
         }
+    }
+
+    public void SetIsCollaborativeTrue()
+    {
+        // L'utente ha cliccato su modalità Cooperativa
+        isCollaborative = true;
+        Debug.LogError("Collaborative Mode Activated");
+    }
+
+    public void SetIsCollaborativeFalse()
+    {
+        // L'utente ha cliccato su modalità competitiva
+        isCollaborative = false;
+        Debug.LogError("Competitive Mode Activated");
+    }
+
+    public void SetLevel1()
+    {
+        level = 1;
+        Debug.LogError("Level " + level);
+    }
+
+    public void SetLevel2()
+    {
+        level = 2;
+        Debug.LogError("Level " + level);
+    }
+
+    public void SetLevel3()
+    {
+        level = 3;
+        Debug.LogError("Level " + level);
+    }
+
+    public void SetFrequency5()
+    {
+        stimulusLenght = 5;
+        Debug.LogError("Frequency: 5 seconds");
+    }
+
+    public void SetFrequency10()
+    {
+        stimulusLenght = 10;
+        Debug.LogError("Frequency: 10 seconds");
+    }
+
+    public void SetFrequency12()
+    {
+        stimulusLenght = 12;
+        Debug.LogError("Frequency: 12 seconds");
+    }
+
+    public void SetFrequency15()
+    {
+        stimulusLenght = 15;
+        Debug.LogError("Frequency: 15 seconds");
+    }
+
+    public void BonusYes()
+    {
+        isBonus = true;
+        bonusnumbers.SetActive(true);
+    }
+    public void BonusNo()
+    {
+        isBonus = false;
+        bonusnumbers.SetActive(false);
+    }
+    public void Bonus(int n)
+    {
+        bonus = n;
     }
 }

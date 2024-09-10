@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.16862746, g: 0.69803923, b: 0.92156863, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -209,8 +209,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2083,7 +2083,7 @@ MonoBehaviour:
   _AChiTocca: 0
   _isCollaborative: 1
   _level: 3
-  _gameTimerLength: 33
+  _gameTimerLength: 63
   _targetSpeed: 0
   _CurrentStimulus: -1
   _StimuliShown: 0
@@ -2102,7 +2102,6 @@ MonoBehaviour:
   asbMessage: {fileID: 8986459517286586756}
   stimuliShownText: {fileID: 3079523385838727479}
   leaveGameBtn: {fileID: 17980901472152248}
-  startNewGameBtn: {fileID: 0}
   maxStimuli: 10
   stimulusLength: 15
   _correctSFX: {fileID: 3712823879457908408}
