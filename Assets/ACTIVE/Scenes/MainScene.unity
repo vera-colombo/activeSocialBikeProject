@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
-  m_SubtractiveShadowColor: {r: 0.51607335, g: 0.58094394, b: 0.745283, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 89813ec6320e27f4a929c1644f4e6957, type: 2}
+  m_SubtractiveShadowColor: {r: 0.6169099, g: 0.67054045, b: 0.8113208, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 11f9a890b6e86384aaf4d69fbe79a6c1, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 477969164}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1544,7 +1544,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bbe6f161f518a1447b08460a31ee5259, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 54cbc22a5493928419073ca7cf631c33, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4123,7 +4123,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 70afe65f7dbb49f43a467eac6b19bb66, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d1dd056c9053d14c8882fab5de0c913, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6840,7 +6840,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Create Room
+  m_text: Crea Room
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -6849,8 +6849,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6873,7 +6873,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -9307,7 +9307,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Join Room
+  m_text: Connetti
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -9316,8 +9316,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9340,7 +9340,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -10394,7 +10394,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fd01ac28b5a58534c8a491597e542708, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 54cbc22a5493928419073ca7cf631c33, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -22367,7 +22367,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Player Name
+  m_text: Username
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -22376,8 +22376,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -22645,8 +22645,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -24255,6 +24255,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 582447814752941676, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 172.7
+      objectReference: {fileID: 0}
     - target: {fileID: 740215658514554191, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
       propertyPath: m_Name
       value: City_PathContainer
@@ -24262,6 +24266,26 @@ PrefabInstance:
     - target: {fileID: 740215658514554191, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 781770737187755987, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 50.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740642935269183561, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 212.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2422927549352239474, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 161.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3614520091778255914, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 142.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843725573126490983, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 190.7
       objectReference: {fileID: 0}
     - target: {fileID: 4220556288615889692, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
       propertyPath: m_RootOrder
@@ -24307,9 +24331,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4490201203744271360, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.94
+      objectReference: {fileID: 0}
     - target: {fileID: 6457429193140445588, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7268159355427212491, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 151.6
       objectReference: {fileID: 0}
     - target: {fileID: 8241468172982973359, guid: 56b833bfc95c0da47a52a58b833b8650, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33887,7 +33919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &772693192
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35715,7 +35747,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 821652289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.56, y: -0.69, z: -0.066}
+  m_LocalPosition: {x: -1.1, y: -0.69, z: -0.066}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36718,7 +36750,7 @@ PrefabInstance:
       objectReference: {fileID: 744190684}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainY
-      value: 0
+      value: -10000
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: infoTexture
@@ -36730,31 +36762,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainMinIndent
-      value: 0.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: detailOffsetVec.x
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: detailOffsetVec.z
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainDetailSplatX
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainDetailSplatY
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainNames.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainObjects.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8885607427502426506, guid: 6f628d09c14711d41824eab8461e4a30, type: 3}
       propertyPath: terrainNames.Array.data[1]
@@ -41600,7 +41632,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 70afe65f7dbb49f43a467eac6b19bb66, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d1dd056c9053d14c8882fab5de0c913, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -55916,7 +55948,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312192832}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.6, y: 0, z: -3.4}
+  m_LocalPosition: {x: -19.31, y: 0, z: -5.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -63079,7 +63111,7 @@ MonoBehaviour:
   park_Scenario: {fileID: 839912717}
   city_Scenario: {fileID: 1518461292604625558}
   playerCanvasContainer: {fileID: 945094767}
-  currentScenario: 
+  currentScenario: City
   preGameMessage: {fileID: 765822995}
   isGameStarted: 0
 --- !u!225 &1484407634
@@ -68069,7 +68101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter Room Name
+  m_text: Inserisci Room Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -74279,7 +74311,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter Player Name
+  m_text: Inserisci Username
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
   m_sharedMaterial: {fileID: -4934036923265289322, guid: ffc91275668f33042ad5ef475a0cda3a, type: 2}
@@ -81924,7 +81956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -86309,7 +86341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2080310435
 RectTransform:
   m_ObjectHideFlags: 0

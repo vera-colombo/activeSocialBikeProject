@@ -127,6 +127,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     public void ActivateStimulusRPC()
     {
         //Debug.LogError("Received ActivateStimulusRPC on StateAuthority, spawning network object");
+        
         NetworkObject currTarget;
         Transform targetParent;
 
@@ -203,6 +204,16 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         //}
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void DestroyStimulusRPC() 
+    {
+        GameObject prevStim = GameObject.FindGameObjectWithTag("Park");
+        if (prevStim == null)
+        {
+            prevStim = GameObject.FindGameObjectWithTag("City");
+        }
+        Destroy(prevStim);
+    }
     #endregion
 
     #region UI ELEMENTS
@@ -310,6 +321,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         OnASBGameStateChanged();
         UpdateCurrentStimulus();
         UpdateStimuliShownText();
+
+        ASBPlayer.LocalPlayer.GetComponent<MoveOnPath_LT>().isMoving = true;
     }
 
     /// <summary>
@@ -555,7 +568,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     }
                     ASBPlayer.LocalPlayer.ChosenAnswer = -1;
                     CurrentStimulus++;
-
+                    DestroyStimulusRPC();
                     stimTimerLength = stimulusLength;
                     stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
                     GameState = ASBStateGame.ShowStimulus;
@@ -701,6 +714,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             //stimuliContainerObj.GetComponent<StimuliMovement>().Move(1);
 
             //endGameObject.Hide();
+            ASBPlayer.LocalPlayer.GetComponent<MoveOnPath_LT>().isMoving = false;
         }
         else if (GameState == ASBStateGame.ShowFeedback)
         {
@@ -735,16 +749,43 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                 if (ASBPlayer.LocalPlayer.ChosenAnswer == 0)
                 {
                     //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
+                    // TODO optimize code for more tasks TASK 1
                     int scoreValue = new int();//da modificare if(tag() parco o città
-                    if (currentTargetType == "Park")
+                    //if (currentTargetType == "Park")
+                    //{
+                    //    scoreValue = -1;
+                    //    pointsClicked++;
+                    //}
+                    //else if (currentTargetType == "City")
+                    //{
+                    //    scoreValue = 1;
+                    //    pointsClicked++;
+                    //}
+                    if (FusionConnector.Instance.currentScenario == "Park")
                     {
-                        scoreValue = -1;
-                        pointsClicked++;
+                        if (currentTargetType == "Park")
+                        {
+                            scoreValue = -1;
+                            pointsClicked++;
+                        }
+                        else if (currentTargetType == "City")
+                        {
+                            scoreValue = 1;
+                            pointsClicked++;
+                        }
                     }
-                    else if (currentTargetType == "City")
+                    else
                     {
-                        scoreValue = 1;
-                        pointsClicked++;
+                        if (currentTargetType == "City")
+                        {
+                            scoreValue = -1;
+                            pointsClicked++;
+                        }
+                        else if (currentTargetType == "Park")
+                        {
+                            scoreValue = 1;
+                            pointsClicked++;
+                        }
                     }
                     // Gets the score pop up and toggles it.
                     var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;
@@ -814,7 +855,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             //stimulus.text = asbStimuliList[stimulusIndex].name;
             if (HasStateAuthority)
             {
-                //Debug.LogError("ActivateStimulus: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
+                Debug.LogError("ActivateStimulus: I am " + ASBPlayer.LocalPlayer.PlayerName + " and has authority is " + HasStateAuthority.ToString());
                 ActivateStimulusRPC();
             }
             // Clears the trivia message
@@ -839,10 +880,11 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     }
     private void UpdateStimuliShownText()
     {
-        if (StimuliShown == 0)
-            stimuliShownText.text = "";
-        else
-            stimuliShownText.text = "Stimuli shown: " + StimuliShown + "\nClick effettuati: " + pointsClicked;
+        stimuliShownText.text = "";
+        //if (StimuliShown == 0)
+        //    stimuliShownText.text = "";
+        //else
+        //    stimuliShownText.text = "Stimuli shown: " + StimuliShown + "\nClick effettuati: " + pointsClicked;
     }
     public async void LeaveGame()
     {
@@ -877,8 +919,11 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             isCollaborative = true;
         }
+
+        
     }
 
+ 
     public void StateAuthorityChanged()
     {
     }

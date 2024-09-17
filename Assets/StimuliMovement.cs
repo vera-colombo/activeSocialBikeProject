@@ -71,7 +71,19 @@ public class StimuliMovement : NetworkBehaviour
                 //PlayerSpeed = cycleErgometerManager.CurrentRPM * conversionFactor;
                 //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
                 spline.place(transform, iter);
-                stimuli_speed = 0.0055f * (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM / 500);
+                List<float> ss = new List<float>();
+                foreach(ASBPlayer p in ASBPlayer.ASBPlayerRefs) 
+                {
+                    ss.Add(p.GetComponent<CycleErgometerManager>().CurrentRPM);
+                    Debug.Log(ss.ToString());
+                }
+                float r = System.Linq.Enumerable.Average(ss);
+                Debug.Log("r " + r.ToString());
+                //float r = (s1 + s2) / 2;
+                stimuli_speed = r;
+                //Debug.Log(s1.ToString() + "-" + s2.ToString() + "-" + r);
+                stimuli_speed = 0.01f * (ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM / 500);
+                Debug.Log("stimuli speed " + stimuli_speed);
                 iter += Runner.DeltaTime * stimuli_speed;
             
                 if (iter >= 1)

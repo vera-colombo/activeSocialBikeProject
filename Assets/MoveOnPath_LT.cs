@@ -12,8 +12,11 @@ public class MoveOnPath_LT : NetworkBehaviour
 
     public float conversionFactor = 0.007f;
     public CycleErgometerManager cycleErgometerManager;
+
     [Networked]
     public bool isMoving { get; set; }
+
+   
 
     private float player_speed = 2f;
 
@@ -49,6 +52,7 @@ public class MoveOnPath_LT : NetworkBehaviour
         // Move the player only if isMoving is true
         if (isMoving)
         {
+            Debug.Log("is moving");
             //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
             //PlayerSpeed = cycleErgometerManager.CurrentRPM * conversionFactor;
             //transform.position += PlayerSpeed * transform.forward * Runner.DeltaTime;
@@ -63,6 +67,10 @@ public class MoveOnPath_LT : NetworkBehaviour
             }
         }
 
+
+
     }
+
+    
 }
 

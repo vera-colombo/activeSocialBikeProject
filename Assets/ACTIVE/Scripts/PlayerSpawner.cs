@@ -40,7 +40,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 testPlayer.transform.position = position;
 
                 EditorPathScripts path;
-                if (FusionConnector.Instance.currentScenario == "Park") 
+                if (FusionConnector.Instance.currentScenario == "Park")
+                //if(isPark)
                 {
                     FusionConnector.Instance.park_pathContainerObj.SetActive(true);
                     path = FusionConnector.Instance.park_pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];

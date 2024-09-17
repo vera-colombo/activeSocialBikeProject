@@ -100,4 +100,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 5969238000153587579, guid: 13689a065560f63498b677207de268b0, type: 3}
-  isPark: 1
+  isPark: 0
