@@ -222,7 +222,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     /// Question, answer, and answer highlights
     /// </summary>
     public TextMeshProUGUI stimulus;
-    public TextMeshProUGUI gameTimerText, stimTimerText, turnTimerText;
+    public TextMeshProUGUI gameTimerText, stimTimerText, turnTimerText, speedText, heartrateText;
     public Image[] answerHighlights;
 
     /// <summary>
@@ -638,9 +638,9 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         // Updates the timer visual
         float? stimRemainingTime = stimTimer.RemainingTime(Runner);
         float? turnRemainingTime = turnTimer.RemainingTime(Runner);
-
+        speedText.text = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentRPM.ToString() + " rpm";
+        heartrateText.text = ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().CurrentHeartRate.ToString() + " bpm";
         string player;
-
         if (stimRemainingTime.HasValue)
         {
             stimTimerText.text = Mathf.Round(stimRemainingTime.Value).ToString();
