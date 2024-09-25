@@ -10,7 +10,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
 {
     public GameObject PlayerPrefab;
     // TODO test only
-    public bool isPark = true;
+    //public bool isPark = true;
+
     public void PlayerJoined(PlayerRef player)
     {
         if (player == Runner.LocalPlayer)
@@ -21,7 +22,6 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
             if (connector != null)
             {
                 var testPlayer = resultingPlayer.GetComponent<ASBPlayer>();
-
                 string playerName = connector.LocalPlayerName;
 
                 if (string.IsNullOrEmpty(playerName))
@@ -36,37 +36,28 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined, IPlayerLeft
                 testPlayer.ChosenAvatar = Random.Range(0, testPlayer.avatarSprites.Length);
 
                 //testPlayer.transform.SetParent(FusionConnector.Instance.playerContainer[resultingPlayer.StateAuthority.PlayerId - 1], false);
-                Vector3 position = FusionConnector.Instance.playerContainer[resultingPlayer.StateAuthority.PlayerId - 1].position;
-                testPlayer.transform.position = position;
+                //Vector3 position = FusionConnector.Instance.playerContainer[resultingPlayer.StateAuthority.PlayerId - 1].position;
+                //testPlayer.transform.position = position;
 
                 EditorPathScripts path;
-                if (FusionConnector.Instance.currentScenario == "Park")
-                //if(isPark)
+                if (Runner.SessionInfo.Properties["scenario"] == "Park")
                 {
-                    FusionConnector.Instance.park_pathContainerObj.SetActive(true);
                     path = FusionConnector.Instance.park_pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
-                    FusionConnector.Instance.park_Scenario.SetActive(true);
                 }
-                else 
+                else
                 {
-                    FusionConnector.Instance.city_pathContainerObj.SetActive(true);
                     path = FusionConnector.Instance.city_pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
-                    FusionConnector.Instance.city_Scenario.SetActive(true);
                 }
 
-
-
-                //GameObject path = FusionConnector.Instance.pathContainer[resultingPlayer.StateAuthority.PlayerId - 1];
-                //testPlayer.GetComponent<PathSpline_LT>().path = path;
                 testPlayer.GetComponent<PathSpline_LT>().CreatePath(path.path_objs);
                 testPlayer.GetComponent<MoveOnPath_LT>().InitPlayerOnPath();
-                // TODO Add here the session settings
             }
         }
 
         FusionConnector.Instance?.OnPlayerJoin(Runner);
     }
 
+   
     public void PlayerLeft(PlayerRef player)
     {
         if (ASBPlayer.LocalPlayer != null)

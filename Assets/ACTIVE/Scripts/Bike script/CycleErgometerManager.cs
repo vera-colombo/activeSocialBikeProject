@@ -26,7 +26,7 @@ public class CycleErgometerManager : MonoBehaviour
     public bool simulation;
     public int minSimSpeed = 50;
     public int maxSimSpeed = 60;
-
+    public int initialLoad = 10;
     public CycleErgometerP10 CycleErgometer
     {
         get
@@ -124,7 +124,7 @@ public class CycleErgometerManager : MonoBehaviour
             //errGameObj.SetActive(true);
             //errGameObj.GetComponentInChildren<Text>().text = "Cicloergometro non trovato";
             Debug.LogError("**** Cycle-ergometer error");
-            SetLoad(5);
+            
             return;
         }
 
@@ -137,7 +137,7 @@ public class CycleErgometerManager : MonoBehaviour
 
         cycleErgometer.EnableUpdate(true, true, true, isSaturation);
         Debug.Log("****Cycle-ergometer enable update");
-
+        SetLoad(initialLoad);
         //if (isSaturation)
         //    saturationImage.enabled = true;
 
@@ -162,11 +162,14 @@ public class CycleErgometerManager : MonoBehaviour
             heartRate = 98;
             spO2 = 98;
         }
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.LogError("I am " + ASBPlayer.LocalPlayer.name + "initial load " + initialLoad);
         if (!simulation)
         {
             if (!_enableUpdate)

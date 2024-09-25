@@ -74,6 +74,15 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
     [Networked, Tooltip("Level.")]
     public int level { get; set; }//numero tra 1 e 3 (compresi)
 
+    [Tooltip("The bonus score.")]
+    public int bonus = 1;
+
+    [Tooltip("The bike workload.")]
+    public int workload = 0;
+
+    [Networked, Tooltip("Frequenza di spawning.")]
+    public int frequency { get; set; }
+
     [Networked, Tooltip("Timer used for the whole game.")]
     public TickTimer gameTimer { get; set; }
 
@@ -122,7 +131,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         Debug.Log("Received DealFeedbackRPC on StateAuthority, modifying Networked variable Game state to feedback");
         GameState = ASBStateGame.ShowFeedback;
     }
-
+  
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void ActivateStimulusRPC()
     {
@@ -291,6 +300,14 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
 
     public override void Spawned()
     {
+        if (GameObject.FindObjectOfType<FusionConnector>().isBonus)
+        {
+            bonus = GameObject.FindObjectOfType<FusionConnector>().bonus;
+        }
+        workload = GameObject.FindObjectOfType<FusionConnector>().workload;
+        ASBPlayer.LocalPlayer.GetComponent<CycleErgometerManager>().initialLoad = workload;
+
+        level = GameObject.FindObjectOfType<FusionConnector>().level;
         // Disallows players from joining once the game is started.
         if (Runner.IsSharedModeMasterClient)
         {
@@ -303,26 +320,26 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
         {
             // Sets an initial intro timer
             // The initial timer for the game is only 3 seconds.
-            stimTimerLength = 3;
-            stimTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
+            stimTimer = TickTimer.CreateFromSeconds(Runner, GameObject.FindObjectOfType<FusionConnector>().frequency);
             if(isCollaborative)
-                turnTimer = TickTimer.CreateFromSeconds(Runner, stimTimerLength);
-            gameTimer = TickTimer.CreateFromSeconds(Runner, gameTimerLength);
+                turnTimer = TickTimer.CreateFromSeconds(Runner, GameObject.FindObjectOfType<FusionConnector>().durata_turni);
+            gameTimer = TickTimer.CreateFromSeconds(Runner, GameObject.FindObjectOfType<FusionConnector>().durata);
 
             CreateASBIndexLists();
 
             ShuffleStimuli();
         }
-
         ASBManagerPresent = true;
 
         FusionConnector.Instance?.SetPregameMessage(string.Empty);
-
+        FusionConnector.Instance.mySettingsPanel.SetActive(false);
+        
         OnASBGameStateChanged();
         UpdateCurrentStimulus();
         UpdateStimuliShownText();
 
         ASBPlayer.LocalPlayer.GetComponent<MoveOnPath_LT>().isMoving = true;
+        isCollaborative = GameObject.FindObjectOfType<FusionConnector>().isCooperative;
     }
 
     /// <summary>
@@ -751,17 +768,8 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                     //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
                     // TODO optimize code for more tasks TASK 1
                     int scoreValue = new int();//da modificare if(tag() parco o città
-                    //if (currentTargetType == "Park")
-                    //{
-                    //    scoreValue = -1;
-                    //    pointsClicked++;
-                    //}
-                    //else if (currentTargetType == "City")
-                    //{
-                    //    scoreValue = 1;
-                    //    pointsClicked++;
-                    //}
-                    if (FusionConnector.Instance.currentScenario == "Park")
+
+                    if (Runner.SessionInfo.Properties["scenario"] == "Park")
                     {
                         if (currentTargetType == "Park")
                         {
@@ -770,7 +778,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                         }
                         else if (currentTargetType == "City")
                         {
-                            scoreValue = 1;
+                            scoreValue = bonus;
                             pointsClicked++;
                         }
                     }
@@ -783,7 +791,7 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
                         }
                         else if (currentTargetType == "Park")
                         {
-                            scoreValue = 1;
+                            scoreValue = bonus;
                             pointsClicked++;
                         }
                     }
@@ -814,15 +822,31 @@ public class ASBManager : NetworkBehaviour, IStateAuthorityChanged
             {
                 //ASBPlayer.LocalPlayer.Expression = TriviaPlayer.AvatarExpressions.Happy_CorrectAnswer;
                 int scoreValue = new int();//da modificare if(tag() parco o città
-                if (currentTargetType == "Park")
+                if (FusionConnector.Instance.customProps["scenario"] == "Park")
                 {
-                    scoreValue = -1;
-                    pointsClicked++;
+                    if (currentTargetType == "Park")
+                    {
+                        scoreValue = -1;
+                        pointsClicked++;
+                    }
+                    else if (currentTargetType == "City")
+                    {
+                        scoreValue = bonus;
+                        pointsClicked++;
+                    }
                 }
-                else if (currentTargetType == "City")
+                else
                 {
-                    scoreValue = 1;
-                    pointsClicked++;
+                    if (currentTargetType == "City")
+                    {
+                        scoreValue = -1;
+                        pointsClicked++;
+                    }
+                    else if (currentTargetType == "Park")
+                    {
+                        scoreValue = bonus;
+                        pointsClicked++;
+                    }
                 }
                 // Gets the score pop up and toggles it.
                 var scorePopUp = ASBPlayer.LocalPlayer.ScorePopUp;

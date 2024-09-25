@@ -186,7 +186,8 @@ public class ASBPlayer : NetworkBehaviour
 
         // We show the "Start Game Button" for the master client only, regardless of the number of players in the room.
         bool showGameButton = Runner.IsSharedModeMasterClient && ASBManager.ASBManagerPresent == false;
-        FusionConnector.Instance.showGameButton.SetActive(showGameButton);
+        FusionConnector.Instance.gameSettingsPanel.SetActive(showGameButton);
+        FusionConnector.Instance.mySettingsPanel.SetActive(true);
 
         if (HasStateAuthority)
         {

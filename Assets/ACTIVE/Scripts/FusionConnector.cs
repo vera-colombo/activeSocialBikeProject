@@ -1,15 +1,19 @@
 using Fusion;
+using Photon.Voice;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FusionConnector : MonoBehaviour
 {
     public string LocalPlayerName { get; set; }
 
     public string LocalRoomName { get; set; }
+    public Dictionary<string, SessionProperty> customProps = new Dictionary<string, SessionProperty>();
+    public string LocalScenario { get; set; }
 
     [SerializeField, Tooltip("The network runner prefab that will be instantiated when looking starting the game.")]
     private NetworkRunner _networkRunnerPrefab;
@@ -28,6 +32,11 @@ public class FusionConnector : MonoBehaviour
 
     [Tooltip("The GameObject that displays the button to start the game.")]
     public GameObject showGameButton;
+    [Tooltip("The GameObject that displays the settings of the game.")]
+    public GameObject gameSettingsPanel;
+
+    [Tooltip("The GameObject that displays the personal settings of the game.")]
+    public GameObject mySettingsPanel;
 
     [Tooltip("Text object that displays the room name.")]
     public TextMeshProUGUI roomName;
@@ -44,13 +53,49 @@ public class FusionConnector : MonoBehaviour
     public GameObject city_Scenario;
     public Transform playerCanvasContainer;
 
-    public string currentScenario;
     [Tooltip("The message shown before starting the game.")]
     public TextMeshProUGUI preGameMessage;
 
     public static FusionConnector Instance { get; private set; }
 
     public bool isGameStarted = false; // Dichiarazione di isGameStarted
+
+    // Modalità di gioco coperativo o competitivo (sincronizzata allo stesso valore per entrambi i player)
+    [Networked, Tooltip("Syncronized Type of Gameplay")]
+    public bool isCooperative { get; set; }
+
+    // Qui dobbiamo fare selezionare tramite tasti il livello per entrambi i giocatori (essendo una variabile Networked)
+    // Il livello è uguale entrambi i player all'interno della stessa lobby.
+    // Poi dovremmo fare lo slider (prefab già datoci da Vera), e tutti gli altri bottoni quali punti bonus e velocità di spawn.
+    // Dopodiché possiamo definire questa piccola parte conclusa
+    [Networked,Tooltip("Livello")]
+    public int level { get; set; }
+
+    // Frequenza di spawn dei prefab all'interno della scena di gioco
+    [Networked, Tooltip("Frequenza di spawn")]
+
+
+    public int frequency { get; set; }
+
+    public int bonus;
+    public bool isBonus;
+    public GameObject bonusnumbers;
+    public int workload;
+    public Slider workloadSlider;
+    public TextMeshProUGUI infotext;
+    // numero di punti bonus
+    public int n;
+
+    // InputField per lunghezza gioco
+    [Tooltip("Lunghezza di gioco")]
+    public TMP_InputField duratafield;
+
+    // InputField per lunghezza turno
+    [Tooltip("durata del turno")]
+    public TMP_InputField durataturnifield;
+
+    public int durata;
+    public int durata_turni;
 
     private void Awake()
     {
@@ -71,46 +116,52 @@ public class FusionConnector : MonoBehaviour
 
     public async void StartGame(bool joinRandomRoom)
     {
-        canvasGroup.interactable = false;
-
-        StartGameArgs startGameArgs = new StartGameArgs()
+        if (LocalScenario != null)
         {
-            GameMode = GameMode.Shared,
-            SessionName = joinRandomRoom ? string.Empty : LocalRoomName,
-            PlayerCount = 20,
-        };
+            canvasGroup.interactable = false;
+            customProps["scenario"] = LocalScenario;
+            StartGameArgs startGameArgs = new StartGameArgs()
+            {
+                GameMode = GameMode.Shared,
+                SessionName = joinRandomRoom ? string.Empty : LocalRoomName,
+                SessionProperties = customProps,
+                PlayerCount = 2,
+            };
 
-        NetworkRunner newRunner = Instantiate(_networkRunnerPrefab);
+            NetworkRunner newRunner = Instantiate(_networkRunnerPrefab);
 
-        StartGameResult result = await newRunner.StartGame(startGameArgs);
+            StartGameResult result = await newRunner.StartGame(startGameArgs);
 
-        if (result.Ok)
-        {
-            roomName.text = "Room:  " + newRunner.SessionInfo.Name;
+            if (result.Ok)
+            {
+                roomName.text = "Room:  " + newRunner.SessionInfo.Name;
 
-            GoToGame();
-            isGameStarted = true;
+                GoToGame(newRunner.SessionInfo.Properties["scenario"]);
+                isGameStarted = true;
+            }
+            else
+            {
+                roomName.text = string.Empty;
+
+                GoToMainMenu();
+
+                errorMessageObject.SetActive(true);
+                TextMeshProUGUI gui = errorMessageObject.GetComponentInChildren<TextMeshProUGUI>();
+                if (gui)
+                    gui.text = result.ErrorMessage;
+
+                Debug.LogError(result.ErrorMessage);
+            }
+
+            canvasGroup.interactable = true;
         }
-        else
-        {
-            roomName.text = string.Empty;
-
-            GoToMainMenu();
-
-            errorMessageObject.SetActive(true);
-            TextMeshProUGUI gui = errorMessageObject.GetComponentInChildren<TextMeshProUGUI>();
-            if (gui)
-                gui.text = result.ErrorMessage;
-
-            Debug.LogError(result.ErrorMessage);
-        }
-
-        canvasGroup.interactable = true;
+        
+      //  SettingsPanel.SetActive(true);
     }
 
     public void SetScenario(string _s) 
     {
-        currentScenario = _s;
+        LocalScenario = _s;
     }
 
     public void GoToMainMenu()
@@ -120,12 +171,28 @@ public class FusionConnector : MonoBehaviour
         isGameStarted = false;
     }
 
-    public void GoToGame()
+    public void GoToGame(string _scenario)
     {
         mainMenuObject.SetActive(false);
         mainGameObject.SetActive(true);
+        ActivateScenario(_scenario);
     }
+    public void ActivateScenario(string _scenario)
+    {
+        //Debug.LogError("I am " + ASBPlayer.LocalPlayer.PlayerName + "- ActivateScenarioRPC ");
 
+        
+        if (_scenario == "Park")
+        {
+            park_pathContainerObj.SetActive(true);
+            park_Scenario.SetActive(true);
+        }
+        else
+        {
+            city_pathContainerObj.SetActive(true);
+            city_Scenario.SetActive(true);
+        }
+    }
     internal void OnPlayerJoin(NetworkRunner runner)
     {
         // Only set pregame messages if the game hasn't started.
@@ -150,31 +217,99 @@ public class FusionConnector : MonoBehaviour
 
     public void StartASBGame()
     {
-        NetworkRunner runner = null;
-        // If no runner has been assigned, we cannot start the game
-        if (NetworkRunner.Instances.Count > 0)
-        {
-            runner = NetworkRunner.Instances[0];
-        }
+            NetworkRunner runner = null;
+            // If no runner has been assigned, we cannot start the game
+            if (NetworkRunner.Instances.Count > 0)
+            {
+                runner = NetworkRunner.Instances[0];
+            }
 
-        if (runner == null)
-        {
-            Debug.Log("No runner found.");
-            return;
-        }
+            if (runner == null)
+            {
+                Debug.Log("No runner found.");
+                return;
+            }
+            // If no ASB manager has been made and we are the master mode client.
+            // Redundant but being safe.
+            if (runner.IsSharedModeMasterClient && !ASBManager.ASBManagerPresent)
+            {
+                runner.Spawn(asbGamePrefab);
+                gameSettingsPanel.SetActive(false);
 
-
-
-        // If no ASB manager has been made and we are the master mode client.
-        // Redundant but being safe.
-        if (runner.IsSharedModeMasterClient && !ASBManager.ASBManagerPresent)
-        {
-            runner.Spawn(asbGamePrefab);
-
-            showGameButton.SetActive(false);
-        }
-
+                // showGameButton.SetActive(false);
+            }
         
-        
+
+    }
+ 
+
+    public void Exit()
+    {
+        if (NetworkRunner.Instances[0].IsSharedModeMasterClient == true)
+        {
+            infotext.text = "Premi play per partire";
+        }
+        else
+        {
+            gameSettingsPanel.SetActive(false);
+        }
+    }
+    public void OnCooperativeEnter()
+    {
+        isCooperative = true;
+    }
+    public void OnCompetitiveEnter()
+    {
+        isCooperative = false;
+    }
+    public void OnLvlEnter(int l)
+    {
+        level = l;
+    }
+    public bool isReallyCooperative()
+    {
+        return isCooperative;
+    }
+    public void Frequency(int f)
+    {
+        frequency = f;
+    }
+    public void isReallyBonus()
+    {
+        isBonus = !isBonus;
+        bonusnumbers.SetActive(isBonus);
+    }
+    public void Bonus(int n)
+    {
+        bonus = n;
+    }
+
+    public void Workload() 
+    {
+        workload = (int)workloadSlider.value * 10;
+    }
+    public void DurataArea()
+    {
+        try
+        {
+            durata = int.Parse(duratafield.text)*60;
+        }
+        catch (Exception e)
+        {
+            infotext.text = "Numero non valido";
+            duratafield.text = "";
+        }
+    }
+    public void TurniArea()
+    {
+        try
+        {
+            durata_turni = int.Parse(durataturnifield.text);
+        }
+        catch (Exception ex)
+        {
+            infotext.text = "Numero non valido";
+            durataturnifield.text = "";
+        }
     }
 }
